@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   app:
-    image: php:8.5-fpm
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
     container_name: helpdesk-app
     restart: unless-stopped
     working_dir: /var/www/html
@@ -15,15 +17,16 @@ services:
       - redis
 
   db:
-    image: postgres:latest
+    image: postgres:18
     container_name: helpdesk-db
     restart: unless-stopped
     environment:
       POSTGRES_DB: helpdesk
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
+      PGDATA: /var/lib/postgresql/18/docker
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql
     networks:
       - helpdesk-network
 
