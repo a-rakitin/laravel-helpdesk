@@ -15,6 +15,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     protected $hidden = [
@@ -27,6 +28,22 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => \App\Enums\UserRole::class,
         ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === \App\Enums\UserRole::ADMIN;
+    }
+
+    public function isAgent(): bool
+    {
+        return $this->role === \App\Enums\UserRole::AGENT;
+    }
+
+    public function isCustomer(): bool
+    {
+        return $this->role === \App\Enums\UserRole::CUSTOMER;
     }
 }
