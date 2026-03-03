@@ -25,4 +25,9 @@ class TicketPolicy
 
         return false;
     }
+
+    public function viewAny(User $user): bool
+    {
+        return in_array($user->role->value, ['admin', 'agent', 'customer'], true);
+    }
 }

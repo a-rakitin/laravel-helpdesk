@@ -14,6 +14,7 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/tickets', [\App\Http\Controllers\TicketController::class, 'index']);
     Route::post('/tickets', [\App\Http\Controllers\TicketController::class, 'store']);
     Route::get('/tickets/{ticket}', [\App\Http\Controllers\TicketController::class, 'show']);
 });
