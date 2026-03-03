@@ -27,4 +27,11 @@ class TicketController extends Controller
 
         return response()->json($ticket, 201);
     }
+
+    public function show(Ticket $ticket)
+    {
+        $this->authorize('view', $ticket);
+
+        return response()->json($ticket);
+    }
 }
