@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Ticket;
 
-use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class CreateTicketTest extends TestCase
 {

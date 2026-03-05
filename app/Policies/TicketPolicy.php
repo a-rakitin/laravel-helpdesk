@@ -2,9 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Ticket;
-use App\Enums\UserRole;
+use App\Models\User;
 
 class TicketPolicy
 {

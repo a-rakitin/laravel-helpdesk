@@ -26,7 +26,7 @@ class RegisterTest extends TestCase
 
         $token = $response->json('token');
 
-        $me = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $me = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/auth/me');
 
         $me->assertOk()

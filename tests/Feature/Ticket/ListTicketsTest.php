@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Ticket;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Ticket;
-use App\Enums\UserRole;
 use App\Enums\TicketStatus;
+use App\Enums\UserRole;
+use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ListTicketsTest extends TestCase
 {

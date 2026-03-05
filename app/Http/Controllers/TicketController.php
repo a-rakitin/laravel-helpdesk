@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ticket;
-use Illuminate\Http\Request;
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
+use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
@@ -38,7 +38,7 @@ class TicketController extends Controller
 
         if ($request->boolean('mine')) {
             // For agent/admin this means assigned_to = me; for customer it's already limited by created_by
-            if (!$user->isCustomer()) {
+            if (! $user->isCustomer()) {
                 $query->where('assigned_to', $user->id);
             }
         }
@@ -55,7 +55,7 @@ class TicketController extends Controller
         $direction = $request->query('direction', 'desc');
 
         $allowedSorts = ['created_at', 'priority', 'status'];
-        if (!in_array($sort, $allowedSorts, true)) {
+        if (! in_array($sort, $allowedSorts, true)) {
             $sort = 'created_at';
         }
 
