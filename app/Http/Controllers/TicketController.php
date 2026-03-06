@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -102,6 +103,44 @@ class TicketController extends Controller
     public function show(Ticket $ticket)
     {
         $this->authorize('view', $ticket);
+
+        return response()->json($ticket);
+    }
+
+    public function assign(Request $request, Ticket $ticket)
+    {
+        $this->authorize('assign', $ticket);
+
+        $data = $request->validate([
+            'assigned_to' => ['required', 'integer', 'exists:users,id'],
+        ]);
+
+        $assignee = User::findOrFail($data['assigned_to']);
+
+        if (! $assignee->isAgent()) {
+            return response()->json([
+                'message' => 'Ticket can be assigned only to an agent.',
+            ], 422);
+        }
+
+        $ticket->update([
+            'assigned_to' => $assignee->id,
+        ]);
+
+        return response()->json($ticket);
+    }
+
+    public function changeStatus(Request $request, Ticket $ticket)
+    {
+        $this->authorize('changeStatus', $ticket);
+
+        $data = $request->validate([
+            'status' => ['required', 'in:open,in_progress,closed'],
+        ]);
+
+        $ticket->update([
+            'status' => TicketStatus::from($data['status']),
+        ]);
 
         return response()->json($ticket);
     }

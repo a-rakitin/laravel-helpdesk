@@ -1,17 +1,22 @@
-# Helpdesk (Ticket System) API — Laravel
+# Laravel Helpdesk
 
-Backend API helpdesk-системы (tickets/comments/roles) на Laravel + PostgreSQL + Redis, упаковано в Docker Compose.
+Ticket system for a helpdesk workflow (tickets, comments, roles) built with Laravel.  
+Dockerized setup with PostgreSQL + Redis + Nginx. Includes Sanctum auth, policies, tests, and CI.
 
-## Tech Stack
-- Laravel (latest stable)
-- PHP 8.4 (php-fpm, custom image)
-- PostgreSQL
-- Redis (cache/queue)
+## Tech stack
+
+- Laravel 12
+- PHP **8.4** (Docker runtime), compatible with PHP **8.2+** (composer constraint)
+- PostgreSQL 18
+- Redis (cache/queues)
 - Nginx
-- PHPUnit (feature tests)
-- Sanctum (auth)
+- Laravel Sanctum
+- PHPUnit feature tests
+- Laravel Pint (code style)
+- GitHub Actions (CI)
 
 ## Requirements
+
 - Docker + Docker Compose
 
 ## Local setup
@@ -28,3 +33,22 @@ docker exec -it helpdesk-app php artisan migrate
 ```
 
 Open: http://localhost
+
+# Useful commands
+
+## Run tests
+
+```bash
+docker exec -it helpdesk-app php artisan test
+```
+
+## Code style (Pint)
+
+```bash
+docker exec -it helpdesk-app ./vendor/bin/pint --test
+docker exec -it helpdesk-app ./vendor/bin/pint
+```
+
+# Demo users (local only)
+
+Seeders create demo users in local environment (password: password).

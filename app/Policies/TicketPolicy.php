@@ -29,4 +29,14 @@ class TicketPolicy
     {
         return in_array($user->role->value, ['admin', 'agent', 'customer'], true);
     }
+
+    public function assign(User $user, Ticket $ticket): bool
+    {
+        return $user->isAdmin() || $user->isAgent();
+    }
+
+    public function changeStatus(User $user, Ticket $ticket): bool
+    {
+        return $user->isAdmin() || $user->isAgent();
+    }
 }
