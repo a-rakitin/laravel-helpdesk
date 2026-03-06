@@ -16,6 +16,8 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tickets', [\App\Http\Controllers\TicketController::class, 'index']);
     Route::post('/tickets', [\App\Http\Controllers\TicketController::class, 'store']);
+    Route::get('/tickets/{ticket}/comments', [\App\Http\Controllers\TicketCommentController::class, 'index']);
+    Route::post('/tickets/{ticket}/comments', [\App\Http\Controllers\TicketCommentController::class, 'store']);
     Route::get('/tickets/{ticket}', [\App\Http\Controllers\TicketController::class, 'show']);
 
     Route::patch('/tickets/{ticket}/assign', [\App\Http\Controllers\TicketController::class, 'assign']);
