@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use App\Models\TicketComment;
+use App\Notifications\TicketCommentAddedNotification;
 use Illuminate\Http\Request;
 
 class TicketCommentController extends Controller
@@ -33,6 +34,18 @@ class TicketCommentController extends Controller
             'user_id' => $request->user()->id,
             'body' => $data['body'],
         ]);
+
+        $recipients = collect([
+            $ticket->creator,
+            $ticket->assignee,
+        ])
+            ->filter()
+            ->unique('id')
+            ->reject(fn ($user) => $user->id === $request->user()->id);
+
+        foreach ($recipients as $recipient) {
+            $recipient->notify(new TicketCommentAddedNotification($ticket, $comment));
+        }
 
         return response()->json($comment, 201);
     }
