@@ -51,6 +51,15 @@ services:
     depends_on:
       - app
 
+  worker:
+    build:
+      context: .
+    command: php artisan queue:work redis --daemon
+    depends_on:
+      - redis
+    environment:
+      - APP_ENV=production
+
 networks:
   helpdesk-network:
     driver: bridge
