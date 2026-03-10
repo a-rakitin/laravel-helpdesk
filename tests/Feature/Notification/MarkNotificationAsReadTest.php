@@ -3,10 +3,10 @@
 namespace Tests\Feature\Notification;
 
 use App\Enums\UserRole;
-use App\Models\Ticket;
 use App\Models\User;
-use App\Notifications\TicketCommentAddedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class MarkNotificationAsReadTest extends TestCase
@@ -19,33 +19,39 @@ class MarkNotificationAsReadTest extends TestCase
             'role' => UserRole::CUSTOMER,
         ]);
 
-        $agent = User::factory()->create([
-            'role' => UserRole::AGENT,
+        $notificationId = (string) Str::uuid();
+
+        DB::table('notifications')->insert([
+            'id' => $notificationId,
+            'type' => 'App\\Notifications\\TicketCommentAddedNotification',
+            'notifiable_type' => User::class,
+            'notifiable_id' => $customer->id,
+            'data' => json_encode([
+                'ticket_id' => 1,
+                'ticket_title' => 'Test ticket',
+                'comment_id' => 1,
+                'comment_body' => 'Reply',
+                'comment_author_id' => 1,
+            ]),
+            'read_at' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
-
-        $ticket = Ticket::create([
-            'title' => 'Ticket',
-            'description' => 'Desc',
-            'created_by' => $customer->id,
-            'assigned_to' => $agent->id,
-        ]);
-
-        $comment = $ticket->comments()->create([
-            'user_id' => $agent->id,
-            'body' => 'Reply',
-        ]);
-
-        $customer->notify(new TicketCommentAddedNotification($ticket, $comment));
-
-        $notification = $customer->notifications()->first();
 
         $response = $this->actingAs($customer, 'sanctum')
-            ->postJson("/api/notifications/{$notification->id}/read");
+            ->postJson("/api/notifications/{$notificationId}/read");
 
         $response->assertOk()
             ->assertJsonPath('message', 'Notification marked as read.');
 
-        $this->assertNotNull($notification->fresh()->read_at);
+        $this->assertDatabaseHas('notifications', [
+            'id' => $notificationId,
+            'notifiable_id' => $customer->id,
+        ]);
+
+        $this->assertNotNull(
+            DB::table('notifications')->where('id', $notificationId)->value('read_at')
+        );
     }
 
     public function test_user_cannot_mark_another_users_notification_as_read(): void
@@ -58,28 +64,27 @@ class MarkNotificationAsReadTest extends TestCase
             'role' => UserRole::CUSTOMER,
         ]);
 
-        $agent = User::factory()->create([
-            'role' => UserRole::AGENT,
+        $notificationId = (string) Str::uuid();
+
+        DB::table('notifications')->insert([
+            'id' => $notificationId,
+            'type' => 'App\\Notifications\\TicketCommentAddedNotification',
+            'notifiable_type' => User::class,
+            'notifiable_id' => $firstUser->id,
+            'data' => json_encode([
+                'ticket_id' => 1,
+                'ticket_title' => 'Test ticket',
+                'comment_id' => 1,
+                'comment_body' => 'Reply',
+                'comment_author_id' => 1,
+            ]),
+            'read_at' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
-
-        $ticket = Ticket::create([
-            'title' => 'Ticket',
-            'description' => 'Desc',
-            'created_by' => $firstUser->id,
-            'assigned_to' => $agent->id,
-        ]);
-
-        $comment = $ticket->comments()->create([
-            'user_id' => $agent->id,
-            'body' => 'Reply',
-        ]);
-
-        $firstUser->notify(new TicketCommentAddedNotification($ticket, $comment));
-
-        $notification = $firstUser->notifications()->first();
 
         $response = $this->actingAs($secondUser, 'sanctum')
-            ->postJson("/api/notifications/{$notification->id}/read");
+            ->postJson("/api/notifications/{$notificationId}/read");
 
         $response->assertNotFound();
     }
