@@ -22,7 +22,7 @@ Dockerized setup with PostgreSQL + Redis + Nginx. Includes Sanctum auth, policie
 ## Local setup
 
 ```bash
-git clone <REPO_URL>
+git clone https://github.com/a-rakitin/laravel-helpdesk.git
 cd laravel-helpdesk
 
 cp .env.example .env

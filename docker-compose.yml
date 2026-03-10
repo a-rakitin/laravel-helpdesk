@@ -11,8 +11,10 @@ services:
     networks:
       - helpdesk-network
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   db:
     image: postgres:18
@@ -27,6 +29,11 @@ services:
       - db-data:/var/lib/postgresql
     networks:
       - helpdesk-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d helpdesk" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:latest
@@ -34,6 +41,11 @@ services:
     restart: unless-stopped
     networks:
       - helpdesk-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   nginx:
     image: nginx:latest
@@ -62,8 +74,10 @@ services:
     networks:
       - helpdesk-network
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 networks:
   helpdesk-network:
