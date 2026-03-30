@@ -11,23 +11,18 @@ class DemoUsersSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
+        User::updateOrCreate([
+            'email' => 'qa-admin@example.com',
+        ], [
+            'name' => 'QA Admin',
             'password' => Hash::make('password'),
             'role' => UserRole::ADMIN,
         ]);
 
-        User::create([
-            'name' => 'Agent One',
-            'email' => 'agent1@example.com',
-            'password' => Hash::make('password'),
-            'role' => UserRole::AGENT,
-        ]);
-
-        User::create([
-            'name' => 'Agent Two',
-            'email' => 'agent2@example.com',
+        User::updateOrCreate([
+            'email' => 'qa-agent@example.com',
+        ], [
+            'name' => 'QA Agent',
             'password' => Hash::make('password'),
             'role' => UserRole::AGENT,
         ]);
