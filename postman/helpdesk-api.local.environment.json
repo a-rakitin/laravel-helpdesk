@@ -1,0 +1,126 @@
+{
+  "name": "Laravel Helpdesk API.local",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "http://localhost",
+      "enabled": true
+    },
+    {
+      "key": "admin_email",
+      "value": "qa-admin@example.com",
+      "enabled": true
+    },
+    {
+      "key": "admin_password",
+      "value": "password",
+      "enabled": true
+    },
+    {
+      "key": "agent_email",
+      "value": "qa-agent@example.com",
+      "enabled": true
+    },
+    {
+      "key": "agent_password",
+      "value": "password",
+      "enabled": true
+    },
+    {
+      "key": "customer_name",
+      "value": "QA Customer 1",
+      "enabled": true
+    },
+    {
+      "key": "customer_email",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "customer_password",
+      "value": "ChangeMe123!",
+      "enabled": true
+    },
+    {
+      "key": "customer_token",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "customer_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "customer2_name",
+      "value": "QA Customer 2",
+      "enabled": true
+    },
+    {
+      "key": "customer2_email",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "customer2_password",
+      "value": "ChangeMe123!",
+      "enabled": true
+    },
+    {
+      "key": "customer2_token",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "customer2_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "agent_token",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "agent_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "admin_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "ticket_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "customer_comment_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "agent_comment_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "notification_id",
+      "value": "",
+      "enabled": true
+    },
+    {
+      "key": "timestamp",
+      "value": "",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}
