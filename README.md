@@ -1,6 +1,7 @@
-# Laravel Helpdesk
+# Laravel Helpdesk API
 
 Ticket system for a helpdesk workflow (tickets, comments, roles) built with Laravel.  
+
 Dockerized setup with PostgreSQL + Redis + Nginx. Includes Sanctum auth, policies, tests, and CI.
 
 ## Tech stack
@@ -18,6 +19,7 @@ Dockerized setup with PostgreSQL + Redis + Nginx. Includes Sanctum auth, policie
 ## Requirements
 
 - Docker + Docker Compose
+- Postman
 
 ## Local setup
 
@@ -29,7 +31,14 @@ cp .env.example .env
 docker compose up -d --build
 
 docker exec -it helpdesk-app php artisan key:generate
-docker exec -it helpdesk-app php artisan migrate
+docker exec -it helpdesk-app php artisan migrate --seed
+```
+
+For stable local Postman checks, make sure your `.env` uses:
+
+```env
+APP_ENV=local
+QUEUE_CONNECTION=sync
 ```
 
 Open: http://localhost
@@ -51,4 +60,22 @@ docker exec -it helpdesk-app ./vendor/bin/pint
 
 # Demo users (local only)
 
-Seeders create demo users in local environment (password: password).
+Seeders create demo users in local environment (password: `password`):
+
+- `qa-admin@example.com`
+- `qa-agent@example.com`
+
+## Postman
+
+Local Postman files:
+
+- `postman/helpdesk-api.local.collection.json`
+- `postman/helpdesk-api.local.environment.json`
+
+The local environment uses:
+
+- `base_url`: `http://localhost`
+- `admin`: `qa-admin@example.com` / `password`
+- `agent`: `qa-agent@example.com` / `password`
+
+The collection also creates fresh customer users during the run and covers auth, tickets, comments, notifications, and logout.
