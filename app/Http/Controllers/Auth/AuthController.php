@@ -10,6 +10,9 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    /**
+     * @unauthenticated
+     */
     public function register(Request $request)
     {
         $data = $request->validate([
@@ -32,6 +35,9 @@ class AuthController extends Controller
         ], 201);
     }
 
+    /**
+     * @unauthenticated
+     */
     public function login(Request $request)
     {
         $data = $request->validate([
