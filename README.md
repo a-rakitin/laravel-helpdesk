@@ -1,8 +1,8 @@
 # Laravel Helpdesk API
 
-Ticket system for a helpdesk workflow (tickets, comments, roles) built with Laravel.  
+Ticket system for a helpdesk workflow (tickets, comments, roles) built with Laravel.
 
-Dockerized setup with PostgreSQL + Redis + Nginx. Includes Sanctum auth, policies, tests, and CI.
+Dockerized setup with PostgreSQL + Redis + Nginx. Includes Sanctum auth, policies, tests, CI, and interactive API documentation generated with Scramble.
 
 ## Tech stack
 
@@ -12,6 +12,7 @@ Dockerized setup with PostgreSQL + Redis + Nginx. Includes Sanctum auth, policie
 - Redis (cache/queues)
 - Nginx
 - Laravel Sanctum
+- Scramble (OpenAPI docs)
 - PHPUnit feature tests
 - Laravel Pint (code style)
 - GitHub Actions (CI)
@@ -42,6 +43,42 @@ QUEUE_CONNECTION=sync
 ```
 
 Open: http://localhost
+
+## API documentation
+
+The project includes interactive API documentation generated with Scramble.
+
+Available docs endpoints:
+
+- UI documentation: `http://localhost/docs/api`
+- OpenAPI JSON: `http://localhost/docs/api.json`
+
+### Authentication in docs
+
+Public endpoints:
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+
+Protected endpoints require a Bearer token.
+
+How to test authenticated requests in the docs:
+
+1. Call `POST /api/auth/register` or `POST /api/auth/login`
+2. Copy the returned token
+3. Use it for protected endpoints as a Bearer token in the documentation UI
+
+Example authorization header:
+
+```http
+Authorization: Bearer YOUR_TOKEN
+```
+
+### Notes
+
+- The API uses Laravel Sanctum for token authentication
+- Public auth endpoints are available without authentication
+- Protected endpoints such as tickets and notifications require a valid token
 
 # Useful commands
 
