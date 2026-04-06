@@ -31,7 +31,6 @@ MARKDOWN,
 
     'middleware' => [
         'web',
-        RestrictedDocsAccess::class,
     ],
 
     'extensions' => [],
