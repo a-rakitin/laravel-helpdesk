@@ -1,8 +1,19 @@
 # Laravel Helpdesk API
 
-Ticket system for a helpdesk workflow (tickets, comments, roles) built with Laravel.
+Ticket system for a helpdesk workflow built with Laravel.
 
-Dockerized setup with PostgreSQL + Redis + Nginx. Includes Sanctum auth, policies, tests, CI, and interactive API documentation generated with Scramble.
+Dockerized setup with PostgreSQL, Redis, and Nginx. Includes Sanctum authentication, role-based access control, automated tests, CI, and interactive API documentation generated with Scramble.
+
+## Project highlights
+
+- Authentication with Laravel Sanctum
+- Ticket management workflow
+- Ticket comments
+- Notifications
+- Role-based access control (`admin`, `agent`, `customer`)
+- Policy-based authorization
+- Interactive API documentation with OpenAPI JSON
+- Feature tests and CI checks
 
 ## Tech stack
 
@@ -80,22 +91,29 @@ Authorization: Bearer YOUR_TOKEN
 - Public auth endpoints are available without authentication
 - Protected endpoints such as tickets and notifications require a valid token
 
-# Useful commands
+## Quality
 
-## Run tests
+- Feature tests for core API flows
+- Policy-based authorization checks
+- Code style enforced with Laravel Pint
+- CI pipeline via GitHub Actions
+
+## Useful commands
+
+### Run tests
 
 ```bash
 docker exec -it helpdesk-app php artisan test
 ```
 
-## Code style (Pint)
+### Code style (Pint)
 
 ```bash
 docker exec -it helpdesk-app ./vendor/bin/pint --test
 docker exec -it helpdesk-app ./vendor/bin/pint
 ```
 
-# Demo users (local only)
+## Demo users (local only)
 
 Seeders create demo users in local environment (password: `password`):
 
