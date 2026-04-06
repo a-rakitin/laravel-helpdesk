@@ -1,8 +1,6 @@
 <?php
 
 use Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess;
-use Dedoc\Scramble\Support\Generator\OpenApi;
-use Dedoc\Scramble\Support\Generator\SecurityScheme;
 
 return [
     'api_path' => 'api',
@@ -40,13 +38,5 @@ MARKDOWN,
 
     'ui' => [
         'title' => 'Laravel Helpdesk API Docs',
-    ],
-
-    'transformers' => [
-        function (OpenApi $openApi) {
-            $openApi->secure(
-                SecurityScheme::http('bearer')
-            );
-        },
     ],
 ];
