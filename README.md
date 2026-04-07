@@ -57,12 +57,13 @@ Open: http://localhost
 
 ## API documentation
 
-The project includes interactive API documentation generated with Scramble.
+The project includes API documentation generated from Laravel code with Scramble.
 
-Available docs endpoints:
+Available documentation endpoints:
 
-- UI documentation: `http://localhost/docs/api`
-- OpenAPI JSON: `http://localhost/docs/api.json`
+- Local interactive docs: `http://localhost/docs/api`
+- Production interactive docs: `https://helpdesk.rakitin.tech/api-docs.html`
+- OpenAPI JSON: `https://helpdesk.rakitin.tech/docs/api.json`
 
 ### Authentication in docs
 
@@ -73,11 +74,11 @@ Public endpoints:
 
 Protected endpoints require a Bearer token.
 
-How to test authenticated requests in the docs:
+How to test authenticated requests:
 
 1. Call `POST /api/auth/register` or `POST /api/auth/login`
 2. Copy the returned token
-3. Use it for protected endpoints as a Bearer token in the documentation UI
+3. Use it as a Bearer token for protected endpoints
 
 Example authorization header:
 

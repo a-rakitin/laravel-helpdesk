@@ -9,5 +9,3 @@ Route::get('/', function () {
         'message' => 'Helpdesk API is running',
     ]);
 });
-
-Route::view('/docs', 'docs.api');
