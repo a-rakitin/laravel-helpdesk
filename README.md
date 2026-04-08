@@ -44,6 +44,7 @@ docker compose up -d --build
 
 docker exec -it helpdesk-app php artisan key:generate
 docker exec -it helpdesk-app php artisan migrate --seed
+docker exec -it helpdesk-app php artisan optimize:clear
 ```
 
 For stable local Postman checks, make sure your `.env` uses:
@@ -62,8 +63,9 @@ The project includes API documentation generated from Laravel code with Scramble
 Available documentation endpoints:
 
 - Local interactive docs: `http://localhost/docs/api`
+- Local OpenAPI JSON: `http://localhost/docs/api.json`
 - Production interactive docs: `https://helpdesk.rakitin.tech/api-docs.html`
-- OpenAPI JSON: `https://helpdesk.rakitin.tech/docs/api.json`
+- Production OpenAPI JSON: `https://helpdesk.rakitin.tech/docs/api.json`
 
 ### Authentication in docs
 
