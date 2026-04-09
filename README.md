@@ -56,6 +56,16 @@ QUEUE_CONNECTION=sync
 
 Open: http://localhost
 
+## Deployment
+
+Production deploy instructions are documented in [`DEPLOY.md`](DEPLOY.md).
+
+Recommended production deploy:
+
+```bash
+./deploy.sh
+```
+
 ## API documentation
 
 The project includes API documentation generated from Laravel code with Scramble.
