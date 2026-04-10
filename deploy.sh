@@ -32,7 +32,7 @@ wait_for_url() {
 }
 
 log "Pull latest changes"
-git pull
+git pull --ff-only
 
 log "Build and start containers"
 docker compose "${COMPOSE_FILES[@]}" up -d --build
