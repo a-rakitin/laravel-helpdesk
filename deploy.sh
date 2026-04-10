@@ -12,6 +12,25 @@ log() {
   echo "==> $1"
 }
 
+wait_for_url() {
+  local url="$1"
+  local attempts="${2:-20}"
+  local delay="${3:-3}"
+
+  for ((i=1; i<=attempts; i++)); do
+    if curl -fsS --max-time 10 -o /dev/null "$url"; then
+      echo "OK: $url"
+      return 0
+    fi
+
+    echo "Attempt $i/$attempts failed for $url, retrying in ${delay}s..."
+    sleep "$delay"
+  done
+
+  echo "FAILED: $url"
+  return 1
+}
+
 log "Pull latest changes"
 git pull
 
@@ -37,9 +56,9 @@ docker compose "${COMPOSE_FILES[@]}" exec -T app php artisan queue:restart
 log "Recreate nginx to refresh upstream connection"
 docker compose "${COMPOSE_FILES[@]}" up -d --force-recreate nginx
 
-log "Quick health checks"
-curl -I https://helpdesk.rakitin.tech
-curl -I https://helpdesk.rakitin.tech/docs/api.json
-curl -I https://helpdesk.rakitin.tech/api-docs.html
+log "Health checks"
+wait_for_url "https://helpdesk.rakitin.tech"
+wait_for_url "https://helpdesk.rakitin.tech/docs/api.json"
+wait_for_url "https://helpdesk.rakitin.tech/api-docs.html"
 
 log "Deploy finished successfully"
