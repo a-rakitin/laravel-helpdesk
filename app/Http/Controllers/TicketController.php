@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
+use App\Http\Requests\ListTicketsRequest;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
-    public function index(Request $request)
+    public function index(ListTicketsRequest $request)
     {
         $this->authorize('viewAny', Ticket::class);
 
