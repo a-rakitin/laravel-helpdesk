@@ -7,11 +7,16 @@ use App\Enums\TicketStatus;
 use App\Http\Requests\ListTicketsRequest;
 use App\Models\Ticket;
 use App\Models\User;
+use Dedoc\Scramble\Attributes\Endpoint;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
+    #[Endpoint(
+        title: 'List tickets',
+        description: 'Returns tickets available to the authenticated user. Customers only see their own tickets. Agents and admins can filter, search, sort, and paginate the result set.'
+    )]
     public function index(ListTicketsRequest $request)
     {
         $this->authorize('viewAny', Ticket::class);
