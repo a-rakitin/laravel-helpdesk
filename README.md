@@ -1,39 +1,81 @@
 # Laravel Helpdesk API
 
-Ticket system for a helpdesk workflow built with Laravel.
+[![CI](https://github.com/a-rakitin/laravel-helpdesk/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/a-rakitin/laravel-helpdesk/actions/workflows/ci.yml)
 
-Dockerized setup with PostgreSQL, Redis, and Nginx. Includes Sanctum authentication, role-based access control, automated tests, CI, and interactive API documentation generated with Scramble.
+Helpdesk ticket workflow API built with Laravel 12. The project includes Sanctum token authentication, role-based access control, PostgreSQL, Redis, Docker, automated tests, CI, and OpenAPI documentation generated with Scramble.
 
-## Project highlights
+## Links
+
+- Live API root: https://helpdesk.rakitin.tech
+- Live interactive docs: https://helpdesk.rakitin.tech/api-docs.html
+- Live OpenAPI JSON: https://helpdesk.rakitin.tech/docs/api.json
+- Local interactive docs: http://localhost/docs/api
+- Local OpenAPI JSON: http://localhost/docs/api.json
+
+## Project Highlights
 
 - Authentication with Laravel Sanctum
-- Ticket management workflow
-- Ticket comments
-- Notifications
-- Role-based access control (`admin`, `agent`, `customer`)
-- Policy-based authorization
-- Interactive API documentation with OpenAPI JSON
-- Feature tests and CI checks
+- Roles for `admin`, `agent`, and `customer`
+- Policy-based authorization for tickets, comments, and notifications
+- Ticket workflow: create, list, view, assign, update status, comment
+- Notification endpoints for helpdesk events
+- PostgreSQL-backed persistence with migrations, factories, and seeders
+- Redis-ready cache, queue, and session configuration
+- Dockerized PHP 8.4 runtime with PostgreSQL 18, Redis, and Nginx
+- Scramble-generated interactive docs and OpenAPI JSON
+- PHPUnit feature tests, Laravel Pint, and GitHub Actions CI
 
-## Tech stack
+## Quick Demo Flow
+
+### Live docs
+
+1. Open https://helpdesk.rakitin.tech/api-docs.html.
+2. Review the public auth endpoints:
+   - `POST /api/auth/register`
+   - `POST /api/auth/login`
+3. Register or log in to get a Sanctum token.
+4. Use `Authorization: Bearer <token>` for protected ticket, comment, notification, and logout endpoints.
+5. Check the generated OpenAPI contract at https://helpdesk.rakitin.tech/docs/api.json.
+
+### Local Postman check
+
+Run the project locally for the complete API flow. The included Postman collection creates fresh customer users, logs in seeded agent/admin users, creates tickets, checks authorization boundaries, adds comments, reads notifications, and logs users out.
+
+Postman assets:
+
+- `postman/helpdesk-api.local.collection.json`
+- `postman/helpdesk-api.local.environment.json`
+
+Local demo users created by seeders use password `password`:
+
+- `qa-admin@example.com`
+- `qa-agent@example.com`
+
+The Postman environment uses:
+
+- `base_url`: `http://localhost`
+- `admin`: `qa-admin@example.com` / `password`
+- `agent`: `qa-agent@example.com` / `password`
+
+## Tech Stack
 
 - Laravel 12
-- PHP **8.4** (Docker runtime), compatible with PHP **8.2+** (composer constraint)
+- PHP 8.4 in Docker and CI, with Composer compatibility set to PHP 8.2+
 - PostgreSQL 18
-- Redis (cache/queues)
+- Redis 7
 - Nginx
 - Laravel Sanctum
-- Scramble (OpenAPI docs)
+- Scramble for OpenAPI docs
 - PHPUnit feature tests
-- Laravel Pint (code style)
-- GitHub Actions (CI)
+- Laravel Pint
+- GitHub Actions
 
-## Requirements
+## Local Setup
+
+Requirements:
 
 - Docker + Docker Compose
-- Postman
-
-## Local setup
+- Postman for collection-based API checks
 
 ```bash
 git clone https://github.com/a-rakitin/laravel-helpdesk.git
@@ -47,103 +89,70 @@ docker exec -it helpdesk-app php artisan migrate --seed
 docker exec -it helpdesk-app php artisan optimize:clear
 ```
 
-For stable local Postman checks, make sure your `.env` uses:
+For stable local API and Postman checks, keep these values in `.env`:
 
 ```env
 APP_ENV=local
 QUEUE_CONNECTION=sync
 ```
 
-Open: http://localhost
+Open the local API at http://localhost.
 
-## Deployment
+## API Documentation
 
-Production deploy instructions are documented in [`DEPLOY.md`](DEPLOY.md).
+Scramble generates the API documentation from the Laravel application.
 
-Recommended production deploy:
-
-```bash
-./deploy.sh
-```
-
-## API documentation
-
-The project includes API documentation generated from Laravel code with Scramble.
-
-Available documentation endpoints:
+Documentation endpoints:
 
 - Local interactive docs: `http://localhost/docs/api`
 - Local OpenAPI JSON: `http://localhost/docs/api.json`
 - Production interactive docs: `https://helpdesk.rakitin.tech/api-docs.html`
 - Production OpenAPI JSON: `https://helpdesk.rakitin.tech/docs/api.json`
 
-### Authentication in docs
+Authentication model:
 
-Public endpoints:
+- Public endpoints: `POST /api/auth/register`, `POST /api/auth/login`
+- Protected endpoints: tickets, comments, notifications, and logout
+- Protected requests require a valid Sanctum Bearer token
 
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-
-Protected endpoints require a Bearer token.
-
-How to test authenticated requests:
-
-1. Call `POST /api/auth/register` or `POST /api/auth/login`
-2. Copy the returned token
-3. Use it as a Bearer token for protected endpoints
-
-Example authorization header:
+Example header:
 
 ```http
 Authorization: Bearer YOUR_TOKEN
 ```
 
-### Notes
+## Verification Commands
 
-- The API uses Laravel Sanctum for token authentication
-- Public auth endpoints are available without authentication
-- Protected endpoints such as tickets and notifications require a valid token
+Composer metadata:
 
-## Quality
+```bash
+composer validate
+```
 
-- Feature tests for core API flows
-- Policy-based authorization checks
-- Code style enforced with Laravel Pint
-- CI pipeline via GitHub Actions
+PHP style:
 
-## Useful commands
+```bash
+docker exec -it helpdesk-app ./vendor/bin/pint --test
+```
 
-### Run tests
+Backend tests:
 
 ```bash
 docker exec -it helpdesk-app php artisan test
 ```
 
-### Code style (Pint)
+Frontend assets only need rebuilding when files under `resources/` or Vite configuration change:
 
 ```bash
-docker exec -it helpdesk-app ./vendor/bin/pint --test
-docker exec -it helpdesk-app ./vendor/bin/pint
+npm run build
 ```
 
-## Demo users (local only)
+## Deployment
 
-Seeders create demo users in local environment (password: `password`):
+Production deployment is documented in [`DEPLOY.md`](DEPLOY.md).
 
-- `qa-admin@example.com`
-- `qa-agent@example.com`
+Recommended production deploy:
 
-## Postman
-
-Local Postman files:
-
-- `postman/helpdesk-api.local.collection.json`
-- `postman/helpdesk-api.local.environment.json`
-
-The local environment uses:
-
-- `base_url`: `http://localhost`
-- `admin`: `qa-admin@example.com` / `password`
-- `agent`: `qa-agent@example.com` / `password`
-
-The collection also creates fresh customer users during the run and covers auth, tickets, comments, notifications, and logout.
+```bash
+./deploy.sh
+```

@@ -1,10 +1,23 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "a-rakitin/laravel-helpdesk",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "Laravel helpdesk ticketing API with Sanctum authentication, role-based workflows, notifications, PostgreSQL, Redis, and OpenAPI documentation.",
+    "keywords": [
+        "api",
+        "helpdesk",
+        "laravel",
+        "openapi",
+        "postgresql",
+        "sanctum",
+        "ticketing"
+    ],
+    "homepage": "https://github.com/a-rakitin/laravel-helpdesk",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/a-rakitin/laravel-helpdesk/issues",
+        "source": "https://github.com/a-rakitin/laravel-helpdesk"
+    },
     "require": {
         "php": "^8.2",
         "dedoc/scramble": "^0.13.17",
