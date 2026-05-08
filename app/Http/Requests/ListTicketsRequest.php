@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\TicketPriority;
+use App\Enums\TicketStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ListTicketsRequest extends FormRequest
 {
@@ -21,7 +24,7 @@ class ListTicketsRequest extends FormRequest
              *
              * @example open
              */
-            'status' => ['nullable', 'string'],
+            'status' => ['nullable', Rule::enum(TicketStatus::class)],
 
             /**
              * Filter by ticket priority.
@@ -30,14 +33,14 @@ class ListTicketsRequest extends FormRequest
              *
              * @example high
              */
-            'priority' => ['nullable', 'string'],
+            'priority' => ['nullable', Rule::enum(TicketPriority::class)],
 
             /**
              * Filter by assigned agent user ID.
              *
              * @example 2
              */
-            'assigned_to' => ['nullable', 'integer'],
+            'assigned_to' => ['nullable', 'integer', Rule::exists('users', 'id')],
 
             /**
              * For agents and admins: when true, return only tickets assigned to the current user.
@@ -57,26 +60,22 @@ class ListTicketsRequest extends FormRequest
              * Sort field.
              *
              * Supported values in this endpoint: created_at, priority, status.
-             * Unknown values are ignored and fall back to created_at.
              *
              * @example priority
              */
-            'sort' => ['nullable', 'string'],
+            'sort' => ['nullable', Rule::in(['created_at', 'priority', 'status'])],
 
             /**
              * Sort direction.
              *
              * Supported values in this endpoint: asc, desc.
-             * Unknown values are ignored and fall back to desc.
              *
              * @example asc
              */
-            'direction' => ['nullable', 'string'],
+            'direction' => ['nullable', Rule::in(['asc', 'desc'])],
 
             /**
              * Number of tickets per page.
-             *
-             * The controller clamps this value to the 1..100 range.
              *
              * @example 50
              */

@@ -22,6 +22,7 @@ class TicketController extends Controller
         $this->authorize('viewAny', Ticket::class);
 
         $user = $request->user();
+        $validated = $request->validated();
 
         $query = Ticket::query();
 
@@ -31,16 +32,16 @@ class TicketController extends Controller
         }
 
         // Filters
-        if ($status = $request->query('status')) {
-            $query->where('status', $status);
+        if (isset($validated['status'])) {
+            $query->where('status', $validated['status']);
         }
 
-        if ($priority = $request->query('priority')) {
-            $query->where('priority', $priority);
+        if (isset($validated['priority'])) {
+            $query->where('priority', $validated['priority']);
         }
 
-        if ($assignedTo = $request->query('assigned_to')) {
-            $query->where('assigned_to', (int) $assignedTo);
+        if (isset($validated['assigned_to'])) {
+            $query->where('assigned_to', (int) $validated['assigned_to']);
         }
 
         if ($request->boolean('mine')) {
@@ -50,7 +51,9 @@ class TicketController extends Controller
             }
         }
 
-        if ($search = $request->query('search')) {
+        if (isset($validated['search'])) {
+            $search = $validated['search'];
+
             $query->where(function (Builder $q) use ($search) {
                 $q->where('title', 'ilike', "%{$search}%")
                     ->orWhere('description', 'ilike', "%{$search}%");
@@ -58,21 +61,13 @@ class TicketController extends Controller
         }
 
         // Sorting
-        $sort = $request->query('sort', 'created_at');
-        $direction = $request->query('direction', 'desc');
-
-        $allowedSorts = ['created_at', 'priority', 'status'];
-        if (! in_array($sort, $allowedSorts, true)) {
-            $sort = 'created_at';
-        }
-
-        $direction = $direction === 'asc' ? 'asc' : 'desc';
+        $sort = $validated['sort'] ?? 'created_at';
+        $direction = $validated['direction'] ?? 'desc';
 
         $query->orderBy($sort, $direction);
 
         // Pagination
-        $perPage = (int) $request->query('per_page', 15);
-        $perPage = max(1, min($perPage, 100));
+        $perPage = (int) ($validated['per_page'] ?? 15);
 
         $paginator = $query->paginate($perPage);
 
