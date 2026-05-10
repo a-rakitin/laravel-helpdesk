@@ -38,6 +38,32 @@ class ChangeStatusTest extends TestCase
         ]);
     }
 
+    public function test_admin_can_change_ticket_status(): void
+    {
+        $admin = User::factory()->create(['role' => UserRole::ADMIN]);
+        $customer = User::factory()->create(['role' => UserRole::CUSTOMER]);
+
+        $ticket = Ticket::create([
+            'title' => 'Test',
+            'description' => 'Desc',
+            'created_by' => $customer->id,
+            'status' => TicketStatus::OPEN,
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->patchJson("/api/tickets/{$ticket->id}/status", [
+                'status' => 'closed',
+            ]);
+
+        $response->assertOk()
+            ->assertJsonPath('status', 'closed');
+
+        $this->assertDatabaseHas('tickets', [
+            'id' => $ticket->id,
+            'status' => 'closed',
+        ]);
+    }
+
     public function test_customer_cannot_change_status(): void
     {
         $customer = User::factory()->create(['role' => UserRole::CUSTOMER]);

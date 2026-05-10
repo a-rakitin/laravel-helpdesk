@@ -62,4 +62,66 @@ class CreateCommentTest extends TestCase
 
         $response->assertForbidden();
     }
+
+    public function test_agent_can_comment_on_customer_ticket(): void
+    {
+        $customer = User::factory()->create([
+            'role' => UserRole::CUSTOMER,
+        ]);
+
+        $agent = User::factory()->create([
+            'role' => UserRole::AGENT,
+        ]);
+
+        $ticket = Ticket::create([
+            'title' => 'Customer ticket',
+            'description' => 'Desc',
+            'created_by' => $customer->id,
+        ]);
+
+        $response = $this->actingAs($agent, 'sanctum')
+            ->postJson("/api/tickets/{$ticket->id}/comments", [
+                'body' => 'Agent response',
+            ]);
+
+        $response->assertCreated()
+            ->assertJsonPath('body', 'Agent response');
+
+        $this->assertDatabaseHas('ticket_comments', [
+            'ticket_id' => $ticket->id,
+            'user_id' => $agent->id,
+            'body' => 'Agent response',
+        ]);
+    }
+
+    public function test_admin_can_comment_on_customer_ticket(): void
+    {
+        $customer = User::factory()->create([
+            'role' => UserRole::CUSTOMER,
+        ]);
+
+        $admin = User::factory()->create([
+            'role' => UserRole::ADMIN,
+        ]);
+
+        $ticket = Ticket::create([
+            'title' => 'Customer ticket',
+            'description' => 'Desc',
+            'created_by' => $customer->id,
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->postJson("/api/tickets/{$ticket->id}/comments", [
+                'body' => 'Admin response',
+            ]);
+
+        $response->assertCreated()
+            ->assertJsonPath('body', 'Admin response');
+
+        $this->assertDatabaseHas('ticket_comments', [
+            'ticket_id' => $ticket->id,
+            'user_id' => $admin->id,
+            'body' => 'Admin response',
+        ]);
+    }
 }

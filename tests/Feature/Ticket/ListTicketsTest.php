@@ -58,4 +58,54 @@ class ListTicketsTest extends TestCase
         $this->assertNotContains('My closed', $titles);
         $this->assertNotContains('Other open', $titles);
     }
+
+    public function test_agent_can_see_customer_tickets(): void
+    {
+        $customer = User::factory()->create([
+            'role' => UserRole::CUSTOMER,
+        ]);
+
+        $agent = User::factory()->create([
+            'role' => UserRole::AGENT,
+        ]);
+
+        $ticket = Ticket::factory()->create([
+            'title' => 'Customer ticket',
+            'created_by' => $customer->id,
+        ]);
+
+        $response = $this->actingAs($agent, 'sanctum')
+            ->getJson('/api/tickets?per_page=100');
+
+        $response->assertOk();
+
+        $ticketIds = collect($response->json('data'))->pluck('id')->all();
+
+        $this->assertContains($ticket->id, $ticketIds);
+    }
+
+    public function test_admin_can_see_customer_tickets(): void
+    {
+        $customer = User::factory()->create([
+            'role' => UserRole::CUSTOMER,
+        ]);
+
+        $admin = User::factory()->create([
+            'role' => UserRole::ADMIN,
+        ]);
+
+        $ticket = Ticket::factory()->create([
+            'title' => 'Customer ticket',
+            'created_by' => $customer->id,
+        ]);
+
+        $response = $this->actingAs($admin, 'sanctum')
+            ->getJson('/api/tickets?per_page=100');
+
+        $response->assertOk();
+
+        $ticketIds = collect($response->json('data'))->pluck('id')->all();
+
+        $this->assertContains($ticket->id, $ticketIds);
+    }
 }
