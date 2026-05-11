@@ -22,7 +22,7 @@ class CreateTicketTest extends TestCase
             ]);
 
         $response->assertCreated()
-            ->assertJsonPath('title', 'Test ticket');
+            ->assertJsonPath('data.title', 'Test ticket');
 
         $this->assertDatabaseHas('tickets', [
             'title' => 'Test ticket',

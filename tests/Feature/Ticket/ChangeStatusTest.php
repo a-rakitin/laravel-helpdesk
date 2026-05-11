@@ -30,7 +30,7 @@ class ChangeStatusTest extends TestCase
             ]);
 
         $response->assertOk()
-            ->assertJsonPath('status', 'in_progress');
+            ->assertJsonPath('data.status', 'in_progress');
 
         $this->assertDatabaseHas('tickets', [
             'id' => $ticket->id,
@@ -56,7 +56,7 @@ class ChangeStatusTest extends TestCase
             ]);
 
         $response->assertOk()
-            ->assertJsonPath('status', 'closed');
+            ->assertJsonPath('data.status', 'closed');
 
         $this->assertDatabaseHas('tickets', [
             'id' => $ticket->id,

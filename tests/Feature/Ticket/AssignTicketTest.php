@@ -29,7 +29,7 @@ class AssignTicketTest extends TestCase
             ]);
 
         $response->assertOk()
-            ->assertJsonPath('assigned_to', $assignee->id);
+            ->assertJsonPath('data.assigned_to', $assignee->id);
 
         $this->assertDatabaseHas('tickets', [
             'id' => $ticket->id,
@@ -55,7 +55,7 @@ class AssignTicketTest extends TestCase
             ]);
 
         $response->assertOk()
-            ->assertJsonPath('assigned_to', $assignee->id);
+            ->assertJsonPath('data.assigned_to', $assignee->id);
 
         $this->assertDatabaseHas('tickets', [
             'id' => $ticket->id,

@@ -527,14 +527,14 @@
                   "",
                   "const json = pm.response.json();",
                   "",
-                  "pm.environment.set('ticket_id', json.id);",
+                  "pm.environment.set('ticket_id', json.data.id);",
                   "",
                   "pm.test('Status defaults to open', function () {",
-                  "  pm.expect(json.status).to.eql('open');",
+                  "  pm.expect(json.data.status).to.eql('open');",
                   "});",
                   "",
                   "pm.test('Priority is high', function () {",
-                  "  pm.expect(json.priority).to.eql('high');",
+                  "  pm.expect(json.data.priority).to.eql('high');",
                   "});"
                 ]
               }
@@ -639,7 +639,7 @@
                   "const json = pm.response.json();",
                   "",
                   "pm.test('Opened correct ticket', function () {",
-                  "  pm.expect(json.id).to.eql(Number(pm.environment.get('ticket_id')));",
+                  "  pm.expect(json.data.id).to.eql(Number(pm.environment.get('ticket_id')));",
                   "});"
                 ]
               }
@@ -906,7 +906,7 @@
                   "const json = pm.response.json();",
                   "",
                   "pm.test('Ticket assigned to current agent', function () {",
-                  "  pm.expect(json.assigned_to).to.eql(Number(pm.environment.get('agent_id')));",
+                  "  pm.expect(json.data.assigned_to).to.eql(Number(pm.environment.get('agent_id')));",
                   "});"
                 ]
               }
@@ -967,7 +967,7 @@
                   "const json = pm.response.json();",
                   "",
                   "pm.test('Status changed to in_progress', function () {",
-                  "  pm.expect(json.status).to.eql('in_progress');",
+                  "  pm.expect(json.data.status).to.eql('in_progress');",
                   "});"
                 ]
               }
@@ -1317,7 +1317,7 @@
                   "});",
                   "",
                   "const json = pm.response.json();",
-                  "pm.environment.set('customer_comment_id', json.id);"
+                  "pm.environment.set('customer_comment_id', json.data.id);"
                 ]
               }
             }
@@ -1375,7 +1375,7 @@
                   "});",
                   "",
                   "const json = pm.response.json();",
-                  "pm.environment.set('agent_comment_id', json.id);"
+                  "pm.environment.set('agent_comment_id', json.data.id);"
                 ]
               }
             }
@@ -1422,10 +1422,10 @@
                   "const json = pm.response.json();",
                   "",
                   "pm.test('Comments array returned', function () {",
-                  "  pm.expect(Array.isArray(json)).to.eql(true);",
+                  "  pm.expect(Array.isArray(json.data)).to.eql(true);",
                   "});",
                   "",
-                  "const hasAgentReply = json.some(comment => comment.id === Number(pm.environment.get('agent_comment_id')));",
+                  "const hasAgentReply = json.data.some(comment => comment.id === Number(pm.environment.get('agent_comment_id')));",
                   "pm.test('Agent reply is visible', function () {",
                   "  pm.expect(hasAgentReply).to.eql(true);",
                   "});"

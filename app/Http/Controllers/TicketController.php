@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
 use App\Http\Requests\ListTicketsRequest;
+use App\Http\Resources\TicketCollection;
+use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
 use App\Models\User;
 use Dedoc\Scramble\Attributes\Endpoint;
@@ -15,7 +17,7 @@ class TicketController extends Controller
 {
     #[Endpoint(
         title: 'List tickets',
-        description: 'Returns tickets available to the authenticated user. Customers only see tickets they created. Agents and admins can see all tickets and can filter, search, sort, and paginate the result set. For agents and admins, mine=true limits the result to tickets assigned to the current user.'
+        description: 'Returns tickets available to the authenticated user as { data: TicketResource[], meta }. Customers only see tickets they created. Agents and admins can see all tickets and can filter, search, sort, and paginate the result set. For agents and admins, mine=true limits the result to tickets assigned to the current user.'
     )]
     public function index(ListTicketsRequest $request)
     {
@@ -71,20 +73,12 @@ class TicketController extends Controller
 
         $paginator = $query->paginate($perPage);
 
-        return response()->json([
-            'data' => $paginator->items(),
-            'meta' => [
-                'current_page' => $paginator->currentPage(),
-                'per_page' => $paginator->perPage(),
-                'total' => $paginator->total(),
-                'last_page' => $paginator->lastPage(),
-            ],
-        ]);
+        return TicketCollection::make($paginator);
     }
 
     #[Endpoint(
         title: 'Create ticket',
-        description: 'Creates a ticket for the authenticated user. The ticket starts with status open, and priority defaults to medium when omitted.'
+        description: 'Creates a ticket for the authenticated user and returns { data: TicketResource }. The ticket starts with status open, and priority defaults to medium when omitted.'
     )]
     public function store(Request $request)
     {
@@ -117,25 +111,27 @@ class TicketController extends Controller
             'priority' => $data['priority'] ?? TicketPriority::MEDIUM,
             'status' => TicketStatus::OPEN,
             'created_by' => $request->user()->id,
-        ]);
+        ])->refresh();
 
-        return response()->json($ticket, 201);
+        return TicketResource::make($ticket)
+            ->response()
+            ->setStatusCode(201);
     }
 
     #[Endpoint(
         title: 'Show ticket',
-        description: 'Returns one ticket when it is visible to the authenticated user. Customers can view only their own tickets; agents and admins can view any ticket.'
+        description: 'Returns { data: TicketResource } when the ticket is visible to the authenticated user. Customers can view only their own tickets; agents and admins can view any ticket.'
     )]
     public function show(Ticket $ticket)
     {
         $this->authorize('view', $ticket);
 
-        return response()->json($ticket);
+        return TicketResource::make($ticket);
     }
 
     #[Endpoint(
         title: 'Assign ticket',
-        description: 'Assigns a ticket to an agent. Only agents and admins can assign tickets. Customer accounts receive 403. The assignee ID must exist and must belong to an agent, otherwise the endpoint returns 422.'
+        description: 'Assigns a ticket to an agent and returns { data: TicketResource }. Only agents and admins can assign tickets. Customer accounts receive 403. The assignee ID must exist and must belong to an agent, otherwise the endpoint returns 422.'
     )]
     public function assign(Request $request, Ticket $ticket)
     {
@@ -162,12 +158,12 @@ class TicketController extends Controller
             'assigned_to' => $assignee->id,
         ]);
 
-        return response()->json($ticket);
+        return TicketResource::make($ticket->refresh());
     }
 
     #[Endpoint(
         title: 'Change ticket status',
-        description: 'Changes ticket status. Only agents and admins can change status. Customer accounts receive 403.'
+        description: 'Changes ticket status and returns { data: TicketResource }. Only agents and admins can change status. Customer accounts receive 403.'
     )]
     public function changeStatus(Request $request, Ticket $ticket)
     {
@@ -186,6 +182,6 @@ class TicketController extends Controller
             'status' => TicketStatus::from($data['status']),
         ]);
 
-        return response()->json($ticket);
+        return TicketResource::make($ticket->refresh());
     }
 }

@@ -39,7 +39,7 @@ class ListCommentsTest extends TestCase
             ->getJson("/api/tickets/{$ticket->id}/comments");
 
         $response->assertOk()
-            ->assertJsonCount(1)
-            ->assertJsonPath('0.body', 'Customer comment');
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.body', 'Customer comment');
     }
 }

@@ -28,7 +28,7 @@ class TicketPolicyTest extends TestCase
             ->getJson("/api/tickets/{$ticket->id}");
 
         $response->assertOk()
-            ->assertJsonPath('id', $ticket->id);
+            ->assertJsonPath('data.id', $ticket->id);
     }
 
     public function test_customer_cannot_view_another_users_ticket(): void
@@ -73,7 +73,7 @@ class TicketPolicyTest extends TestCase
             ->getJson("/api/tickets/{$ticket->id}");
 
         $response->assertOk()
-            ->assertJsonPath('id', $ticket->id);
+            ->assertJsonPath('data.id', $ticket->id);
     }
 
     public function test_admin_can_view_customer_ticket(): void
@@ -96,6 +96,6 @@ class TicketPolicyTest extends TestCase
             ->getJson("/api/tickets/{$ticket->id}");
 
         $response->assertOk()
-            ->assertJsonPath('id', $ticket->id);
+            ->assertJsonPath('data.id', $ticket->id);
     }
 }

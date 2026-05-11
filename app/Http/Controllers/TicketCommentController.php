@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TicketCommentResource;
 use App\Models\Ticket;
 use App\Models\TicketComment;
 use App\Notifications\TicketCommentAddedNotification;
@@ -12,7 +13,7 @@ class TicketCommentController extends Controller
 {
     #[Endpoint(
         title: 'List ticket comments',
-        description: 'Returns comments for a ticket visible to the authenticated user. Customers can list comments only for their own tickets; agents and admins can list comments for any ticket.'
+        description: 'Returns comments for a ticket visible to the authenticated user as { data: TicketCommentResource[] }. Customers can list comments only for their own tickets; agents and admins can list comments for any ticket.'
     )]
     public function index(Request $request, Ticket $ticket)
     {
@@ -23,12 +24,12 @@ class TicketCommentController extends Controller
             ->latest()
             ->get();
 
-        return response()->json($comments);
+        return TicketCommentResource::collection($comments);
     }
 
     #[Endpoint(
         title: 'Create ticket comment',
-        description: 'Adds a comment to a visible ticket. Customers can comment only on their own tickets; agents and admins can comment on any ticket. The ticket creator and assignee are notified except for the comment author.'
+        description: 'Adds a comment to a visible ticket and returns { data: TicketCommentResource }. Customers can comment only on their own tickets; agents and admins can comment on any ticket. The ticket creator and assignee are notified except for the comment author.'
     )]
     public function store(Request $request, Ticket $ticket)
     {
@@ -61,6 +62,8 @@ class TicketCommentController extends Controller
             $recipient->notify(new TicketCommentAddedNotification($ticket, $comment));
         }
 
-        return response()->json($comment, 201);
+        return TicketCommentResource::make($comment)
+            ->response()
+            ->setStatusCode(201);
     }
 }

@@ -30,7 +30,7 @@ class CreateCommentTest extends TestCase
             ]);
 
         $response->assertCreated()
-            ->assertJsonPath('body', 'My first comment');
+            ->assertJsonPath('data.body', 'My first comment');
 
         $this->assertDatabaseHas('ticket_comments', [
             'ticket_id' => $ticket->id,
@@ -85,7 +85,7 @@ class CreateCommentTest extends TestCase
             ]);
 
         $response->assertCreated()
-            ->assertJsonPath('body', 'Agent response');
+            ->assertJsonPath('data.body', 'Agent response');
 
         $this->assertDatabaseHas('ticket_comments', [
             'ticket_id' => $ticket->id,
@@ -116,7 +116,7 @@ class CreateCommentTest extends TestCase
             ]);
 
         $response->assertCreated()
-            ->assertJsonPath('body', 'Admin response');
+            ->assertJsonPath('data.body', 'Admin response');
 
         $this->assertDatabaseHas('ticket_comments', [
             'ticket_id' => $ticket->id,

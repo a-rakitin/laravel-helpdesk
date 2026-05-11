@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\NotificationResource;
 use Dedoc\Scramble\Attributes\Endpoint;
 use Illuminate\Http\Request;
 
@@ -9,16 +10,16 @@ class NotificationController extends Controller
 {
     #[Endpoint(
         title: 'List notifications',
-        description: 'Returns notifications for the authenticated user only.'
+        description: 'Returns notifications for the authenticated user only as { data: NotificationResource[] }.'
     )]
     public function index(Request $request)
     {
-        return response()->json([
-            'data' => $request->user()
+        return NotificationResource::collection(
+            $request->user()
                 ->notifications()
                 ->latest()
-                ->get(),
-        ]);
+                ->get()
+        );
     }
 
     /**

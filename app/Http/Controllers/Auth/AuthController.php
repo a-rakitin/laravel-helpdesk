@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Dedoc\Scramble\Attributes\BodyParameter;
 use Dedoc\Scramble\Attributes\Endpoint;
@@ -17,7 +18,7 @@ class AuthController extends Controller
      */
     #[Endpoint(
         title: 'Register',
-        description: 'Creates a customer account and returns a Sanctum bearer token. Validation errors are returned for missing fields, invalid or duplicate email addresses, weak passwords, and password confirmation mismatches.'
+        description: 'Creates a customer account and returns a Sanctum bearer token. Auth responses intentionally keep the Postman-friendly shape { user, token }, with user normalized by UserResource. Validation errors are returned for missing fields, invalid or duplicate email addresses, weak passwords, and password confirmation mismatches.'
     )]
     #[BodyParameter(
         'password_confirmation',
@@ -54,12 +55,12 @@ class AuthController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => $data['password'],
-        ]);
+        ])->refresh();
 
         $token = $user->createToken('api')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
+            'user' => UserResource::make($user),
             'token' => $token,
         ], 201);
     }
@@ -69,7 +70,7 @@ class AuthController extends Controller
      */
     #[Endpoint(
         title: 'Login',
-        description: 'Authenticates a user, revokes previous API tokens for that user, and returns a new Sanctum bearer token. Invalid credentials return a 422 validation response on the email field.'
+        description: 'Authenticates a user, revokes previous API tokens for that user, and returns a new Sanctum bearer token. Auth responses intentionally keep the Postman-friendly shape { user, token }, with user normalized by UserResource. Invalid credentials return a 422 validation response on the email field.'
     )]
     public function login(Request $request)
     {
@@ -103,19 +104,19 @@ class AuthController extends Controller
         $token = $user->createToken('api')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
+            'user' => UserResource::make($user),
             'token' => $token,
         ]);
     }
 
     #[Endpoint(
         title: 'Current user',
-        description: 'Returns the authenticated user for a valid Sanctum bearer token.'
+        description: 'Returns the authenticated user for a valid Sanctum bearer token. This auth response intentionally keeps the shape { user } instead of { data } so the existing Postman demo flow remains stable.'
     )]
     public function me(Request $request)
     {
         return response()->json([
-            'user' => $request->user(),
+            'user' => UserResource::make($request->user()),
         ]);
     }
 
