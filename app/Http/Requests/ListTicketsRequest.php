@@ -36,7 +36,7 @@ class ListTicketsRequest extends FormRequest
             'priority' => ['nullable', Rule::enum(TicketPriority::class)],
 
             /**
-             * Filter by assigned agent user ID.
+             * Filter by assigned user ID. The ID must exist in users.
              *
              * @example 2
              */

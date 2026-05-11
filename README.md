@@ -39,7 +39,7 @@ Helpdesk ticket workflow API built with Laravel 12. The project includes Sanctum
 
 ### Local Postman check
 
-Run the project locally for the complete API flow. The included Postman collection creates fresh customer users, logs in seeded agent/admin users, creates tickets, checks authorization boundaries, adds comments, reads notifications, and logs users out.
+Run the project locally for the complete API flow. The included Postman collection creates fresh customer users, logs in seeded agent/admin users, creates tickets, checks validation errors, authorization boundaries, not-found responses, comments, notifications, and verifies that logout invalidates the current token.
 
 Postman assets:
 

@@ -15,7 +15,7 @@ class TicketController extends Controller
 {
     #[Endpoint(
         title: 'List tickets',
-        description: 'Returns tickets available to the authenticated user. Customers only see their own tickets. Agents and admins can filter, search, sort, and paginate the result set.'
+        description: 'Returns tickets available to the authenticated user. Customers only see tickets they created. Agents and admins can see all tickets and can filter, search, sort, and paginate the result set. For agents and admins, mine=true limits the result to tickets assigned to the current user.'
     )]
     public function index(ListTicketsRequest $request)
     {
@@ -82,11 +82,32 @@ class TicketController extends Controller
         ]);
     }
 
+    #[Endpoint(
+        title: 'Create ticket',
+        description: 'Creates a ticket for the authenticated user. The ticket starts with status open, and priority defaults to medium when omitted.'
+    )]
     public function store(Request $request)
     {
         $data = $request->validate([
+            /**
+             * Ticket title.
+             *
+             * @example Cannot sign in
+             */
             'title' => ['required', 'string', 'max:255'],
+
+            /**
+             * Detailed problem description.
+             *
+             * @example Login fails after password reset.
+             */
             'description' => ['required', 'string'],
+
+            /**
+             * Ticket priority. Defaults to medium when omitted.
+             *
+             * @example high
+             */
             'priority' => ['nullable', 'in:low,medium,high'],
         ]);
 
@@ -101,6 +122,10 @@ class TicketController extends Controller
         return response()->json($ticket, 201);
     }
 
+    #[Endpoint(
+        title: 'Show ticket',
+        description: 'Returns one ticket when it is visible to the authenticated user. Customers can view only their own tickets; agents and admins can view any ticket.'
+    )]
     public function show(Ticket $ticket)
     {
         $this->authorize('view', $ticket);
@@ -108,11 +133,20 @@ class TicketController extends Controller
         return response()->json($ticket);
     }
 
+    #[Endpoint(
+        title: 'Assign ticket',
+        description: 'Assigns a ticket to an agent. Only agents and admins can assign tickets. Customer accounts receive 403. The assignee ID must exist and must belong to an agent, otherwise the endpoint returns 422.'
+    )]
     public function assign(Request $request, Ticket $ticket)
     {
         $this->authorize('assign', $ticket);
 
         $data = $request->validate([
+            /**
+             * Existing agent user ID.
+             *
+             * @example 2
+             */
             'assigned_to' => ['required', 'integer', 'exists:users,id'],
         ]);
 
@@ -131,11 +165,20 @@ class TicketController extends Controller
         return response()->json($ticket);
     }
 
+    #[Endpoint(
+        title: 'Change ticket status',
+        description: 'Changes ticket status. Only agents and admins can change status. Customer accounts receive 403.'
+    )]
     public function changeStatus(Request $request, Ticket $ticket)
     {
         $this->authorize('changeStatus', $ticket);
 
         $data = $request->validate([
+            /**
+             * New ticket status.
+             *
+             * @example in_progress
+             */
             'status' => ['required', 'in:open,in_progress,closed'],
         ]);
 
