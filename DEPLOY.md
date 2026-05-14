@@ -61,9 +61,11 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --force-re
 After deploy, verify the main endpoints:
 
 ```bash
-curl -I https://helpdesk.rakitin.tech
-curl -I https://helpdesk.rakitin.tech/docs/api.json
-curl -I https://helpdesk.rakitin.tech/api-docs.html
+APP_URL=https://your-domain.example
+
+curl -I "$APP_URL"
+curl -I "$APP_URL/docs/api.json"
+curl -I "$APP_URL/api-docs.html"
 ```
 
 Expected result:
@@ -72,6 +74,60 @@ Expected result:
 - OpenAPI JSON responds successfully
 - the production documentation page opens successfully
 
+## Deploy smoke checklist
+
+Set `APP_URL` to the deployed site. Use the first three checks for every deploy.
+Use either login or register to get a token, then verify at least one protected
+endpoint with that token.
+
+```bash
+APP_URL=https://your-domain.example
+```
+
+- Root endpoint:
+
+```bash
+curl -fsS "$APP_URL/"
+```
+
+- Docs JSON:
+
+```bash
+curl -fsS "$APP_URL/docs/api.json"
+```
+
+- Docs UI:
+
+```bash
+curl -fsS "$APP_URL/api-docs.html"
+```
+
+- Auth login with a known account:
+
+```bash
+curl -fsS "$APP_URL/api/auth/login" \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"qa-agent@example.com","password":"password"}'
+```
+
+- Or register a throwaway customer account:
+
+```bash
+curl -fsS "$APP_URL/api/auth/register" \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Smoke Test","email":"smoke-CHANGE-ME@example.com","password":"password123","password_confirmation":"password123"}'
+```
+
+- Protected endpoint with the returned bearer token:
+
+```bash
+curl -fsS "$APP_URL/api/auth/me" \
+  -H 'Authorization: Bearer YOUR_TOKEN'
+```
+
+Production auth endpoints have a stricter rate limit than authenticated API
+endpoints, so avoid looping these smoke commands rapidly.
+
 ## Notes
 
 - `git pull --ff-only` prevents accidental merge commits on the server
@@ -79,3 +135,5 @@ Expected result:
 - `queue:restart` is required so workers reload the new application code
 - `nginx` is recreated at the end because otherwise it may keep a stale upstream connection to the PHP container after app container recreation
 - the script includes automatic health-check retries
+- production database credentials should live in the server `.env`; the Compose
+  file only provides local development defaults

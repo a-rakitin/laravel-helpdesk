@@ -21,16 +21,16 @@ services:
     container_name: helpdesk-db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: helpdesk
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${DB_DATABASE:-helpdesk}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-local-helpdesk-password}
       PGDATA: /var/lib/postgresql/18/docker
     volumes:
       - db-data:/var/lib/postgresql
     networks:
       - helpdesk-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d helpdesk"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5

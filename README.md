@@ -22,6 +22,7 @@ Helpdesk ticket workflow API built with Laravel 12. The project includes Sanctum
 - PostgreSQL-backed persistence with migrations, factories, and seeders
 - Redis-ready cache, queue, and session configuration
 - Dockerized PHP 8.4 runtime with PostgreSQL 18, Redis, and Nginx
+- Basic API rate limiting for auth and protected endpoints
 - Scramble-generated interactive docs and OpenAPI JSON
 - PHPUnit feature tests, Laravel Pint, and GitHub Actions CI
 
@@ -96,6 +97,10 @@ APP_ENV=local
 QUEUE_CONNECTION=sync
 ```
 
+The Docker PostgreSQL service reads `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD`
+from `.env`. The example password is local-only; use a strong unique value in
+production before creating or recreating the database container.
+
 Open the local API at http://localhost.
 
 ## API Documentation
@@ -114,6 +119,7 @@ Authentication model:
 - Public endpoints: `POST /api/auth/register`, `POST /api/auth/login`
 - Protected endpoints: tickets, comments, notifications, and logout
 - Protected requests require a valid Sanctum Bearer token
+- Auth endpoints are rate limited more strictly than authenticated API endpoints
 
 Example header:
 
