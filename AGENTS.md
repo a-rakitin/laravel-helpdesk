@@ -37,6 +37,12 @@
 - Add or update feature tests for API behavior, authorization rules, notification behavior, validation changes, and database-backed workflow changes.
 - Prefer focused tests in `tests/Feature/...` that cover the user-visible API contract and policy outcomes.
 
+## Git And Commits
+
+- Use conventional commit-style messages matching the repository history, such as `feat: ...`, `fix: ...`, `refactor: ...`, `test: ...`, `docs: ...`, `chore: ...`, and `perf: ...`.
+- Before committing, inspect recent commit messages with `git log --oneline -8` and choose a message that fits the existing style.
+- Keep commit messages short, imperative, and scoped to the actual change.
+
 ## Coding Guidelines
 
 - Follow existing Laravel 12 conventions and the current project structure under `app/`, `routes/`, `database/`, and `tests/`.
