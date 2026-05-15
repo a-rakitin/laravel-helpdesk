@@ -22,6 +22,20 @@ class ProtectedEndpointTest extends TestCase
         $response->assertUnauthorized();
     }
 
+    #[DataProvider('protectedEndpoints')]
+    public function test_protected_endpoint_returns_json_without_json_accept_header(string $method, string $uri, array $payload = []): void
+    {
+        $response = $this
+            ->withHeaders(['Accept' => '*/*'])
+            ->call($method, $uri, $payload);
+
+        $response
+            ->assertUnauthorized()
+            ->assertJson([
+                'message' => 'Unauthenticated.',
+            ]);
+    }
+
     public static function protectedEndpoints(): array
     {
         return [
