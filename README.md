@@ -132,7 +132,20 @@ Authorization: Bearer YOUR_TOKEN
 Composer metadata:
 
 ```bash
-composer validate
+composer validate --strict
+```
+
+Dependency audit:
+
+```bash
+composer audit
+npm audit
+```
+
+Docker Compose config:
+
+```bash
+docker compose config
 ```
 
 PHP style:
