@@ -64,15 +64,15 @@ After deploy, verify the main endpoints:
 APP_URL=https://your-domain.example
 
 curl -I "$APP_URL"
+curl -I "$APP_URL/docs/api"
 curl -I "$APP_URL/docs/api.json"
-curl -I "$APP_URL/api-docs.html"
 ```
 
 Expected result:
 
 - the main site responds successfully
+- the interactive documentation page responds successfully
 - OpenAPI JSON responds successfully
-- the production documentation page opens successfully
 
 ## Deploy smoke checklist
 
@@ -99,7 +99,7 @@ curl -fsS "$APP_URL/docs/api.json"
 - Docs UI:
 
 ```bash
-curl -fsS "$APP_URL/api-docs.html"
+curl -fsS "$APP_URL/docs/api"
 ```
 
 - Auth login with a known account:

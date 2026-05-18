@@ -7,7 +7,7 @@ Helpdesk ticket workflow API built with Laravel 12. The project includes Sanctum
 ## Links
 
 - Live API root: https://helpdesk.rakitin.tech
-- Live interactive docs: https://helpdesk.rakitin.tech/api-docs.html
+- Live interactive docs: https://helpdesk.rakitin.tech/docs/api
 - Live OpenAPI JSON: https://helpdesk.rakitin.tech/docs/api.json
 - Local interactive docs: http://localhost/docs/api
 - Local OpenAPI JSON: http://localhost/docs/api.json
@@ -30,7 +30,7 @@ Helpdesk ticket workflow API built with Laravel 12. The project includes Sanctum
 
 ### Live docs
 
-1. Open https://helpdesk.rakitin.tech/api-docs.html.
+1. Open https://helpdesk.rakitin.tech/docs/api.
 2. Review the public auth endpoints:
    - `POST /api/auth/register`
    - `POST /api/auth/login`
@@ -111,7 +111,7 @@ Documentation endpoints:
 
 - Local interactive docs: `http://localhost/docs/api`
 - Local OpenAPI JSON: `http://localhost/docs/api.json`
-- Production interactive docs: `https://helpdesk.rakitin.tech/api-docs.html`
+- Production interactive docs: `https://helpdesk.rakitin.tech/docs/api`
 - Production OpenAPI JSON: `https://helpdesk.rakitin.tech/docs/api.json`
 
 Authentication model:

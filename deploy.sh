@@ -58,7 +58,7 @@ docker compose "${COMPOSE_FILES[@]}" up -d --force-recreate nginx
 
 log "Health checks"
 wait_for_url "https://helpdesk.rakitin.tech"
+wait_for_url "https://helpdesk.rakitin.tech/docs/api"
 wait_for_url "https://helpdesk.rakitin.tech/docs/api.json"
-wait_for_url "https://helpdesk.rakitin.tech/api-docs.html"
 
 log "Deploy finished successfully"
