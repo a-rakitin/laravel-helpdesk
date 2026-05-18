@@ -1,0 +1,65 @@
+<?php
+
+namespace Tests\Feature;
+
+use Tests\TestCase;
+
+class PublicSurfaceTest extends TestCase
+{
+    public function test_root_shows_public_landing_page_with_project_links(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk()
+            ->assertHeader('content-type', 'text/html; charset=UTF-8')
+            ->assertSee('<title>Helpdesk API</title>', false)
+            ->assertSee('rel="icon"', false)
+            ->assertSee('data:image/svg+xml', false)
+            ->assertSee('Helpdesk API', false)
+            ->assertSee('Helpdesk ticket workflow API', false)
+            ->assertSee('data-theme="dark"', false)
+            ->assertSee('data-lang-toggle', false)
+            ->assertSee('GitHub', false)
+            ->assertSee('Local setup', false)
+            ->assertSee('href="/docs/api"', false)
+            ->assertSee('href="/docs/api.json"', false)
+            ->assertSee('href="https://github.com/a-rakitin/laravel-helpdesk"', false)
+            ->assertSee('href="https://github.com/a-rakitin/laravel-helpdesk#local-setup"', false)
+            ->assertSee('href="https://github.com/a-rakitin/laravel-helpdesk/tree/main/postman"', false)
+            ->assertDontSee('/api-docs.html', false)
+            ->assertDontSee('"status":"ok"', false);
+
+        $content = $response->getContent();
+
+        $this->assertSame(1, substr_count($content, 'href="/docs/api"'));
+        $this->assertSame(1, substr_count($content, 'href="/docs/api.json"'));
+    }
+
+    public function test_docs_api_shows_interactive_documentation(): void
+    {
+        $response = $this->get('/docs/api');
+
+        $response->assertOk()
+            ->assertHeader('content-type', 'text/html; charset=UTF-8')
+            ->assertSee('Laravel Helpdesk API Docs', false);
+    }
+
+    public function test_docs_api_json_keeps_openapi_document_route(): void
+    {
+        $response = $this->getJson('/docs/api.json');
+
+        $response->assertOk()
+            ->assertJsonStructure([
+                'openapi',
+                'info' => ['title', 'version'],
+                'paths',
+            ]);
+    }
+
+    public function test_legacy_api_docs_url_is_not_part_of_public_surface(): void
+    {
+        $response = $this->get('/api-docs.html');
+
+        $response->assertNotFound();
+    }
+}
