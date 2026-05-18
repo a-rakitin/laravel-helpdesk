@@ -43,6 +43,9 @@ docker compose "${COMPOSE_FILES[@]}" exec -T app composer install --no-dev --opt
 log "Run database migrations"
 docker compose "${COMPOSE_FILES[@]}" exec -T app php artisan migrate --force
 
+log "Fix Laravel writable directory permissions"
+docker compose "${COMPOSE_FILES[@]}" exec -T app chown -R www-data:www-data storage bootstrap/cache
+
 log "Clear old caches"
 docker compose "${COMPOSE_FILES[@]}" exec -T app php artisan optimize:clear
 
