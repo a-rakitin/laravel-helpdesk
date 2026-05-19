@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTicketCommentRequest;
 use App\Http\Resources\TicketCommentResource;
 use App\Models\Ticket;
 use App\Models\TicketComment;
@@ -31,18 +32,9 @@ class TicketCommentController extends Controller
         title: 'Create ticket comment',
         description: 'Adds a comment to a visible ticket and returns { data: TicketCommentResource }. Customers can comment only on their own tickets; agents and admins can comment on any ticket. The ticket creator and assignee are notified except for the comment author.'
     )]
-    public function store(Request $request, Ticket $ticket)
+    public function store(StoreTicketCommentRequest $request, Ticket $ticket)
     {
-        $this->authorize('view', $ticket);
-
-        $data = $request->validate([
-            /**
-             * Comment body.
-             *
-             * @example I can reproduce this issue.
-             */
-            'body' => ['required', 'string'],
-        ]);
+        $data = $request->validated();
 
         $comment = TicketComment::create([
             'ticket_id' => $ticket->id,

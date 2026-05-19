@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
+use App\Http\Requests\AssignTicketRequest;
+use App\Http\Requests\ChangeTicketStatusRequest;
 use App\Http\Requests\ListTicketsRequest;
+use App\Http\Requests\StoreTicketRequest;
 use App\Http\Resources\TicketCollection;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
 use App\Models\User;
 use Dedoc\Scramble\Attributes\Endpoint;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
@@ -80,30 +82,9 @@ class TicketController extends Controller
         title: 'Create ticket',
         description: 'Creates a ticket for the authenticated user and returns { data: TicketResource }. The ticket starts with status open, and priority defaults to medium when omitted.'
     )]
-    public function store(Request $request)
+    public function store(StoreTicketRequest $request)
     {
-        $data = $request->validate([
-            /**
-             * Ticket title.
-             *
-             * @example Cannot sign in
-             */
-            'title' => ['required', 'string', 'max:255'],
-
-            /**
-             * Detailed problem description.
-             *
-             * @example Login fails after password reset.
-             */
-            'description' => ['required', 'string'],
-
-            /**
-             * Ticket priority. Defaults to medium when omitted.
-             *
-             * @example high
-             */
-            'priority' => ['nullable', 'in:low,medium,high'],
-        ]);
+        $data = $request->validated();
 
         $ticket = Ticket::create([
             'title' => $data['title'],
@@ -133,18 +114,9 @@ class TicketController extends Controller
         title: 'Assign ticket',
         description: 'Assigns a ticket to an agent and returns { data: TicketResource }. Only agents and admins can assign tickets. Customer accounts receive 403. The assignee ID must exist and must belong to an agent, otherwise the endpoint returns 422.'
     )]
-    public function assign(Request $request, Ticket $ticket)
+    public function assign(AssignTicketRequest $request, Ticket $ticket)
     {
-        $this->authorize('assign', $ticket);
-
-        $data = $request->validate([
-            /**
-             * Existing agent user ID.
-             *
-             * @example 2
-             */
-            'assigned_to' => ['required', 'integer', 'exists:users,id'],
-        ]);
+        $data = $request->validated();
 
         $assignee = User::findOrFail($data['assigned_to']);
 
@@ -165,18 +137,9 @@ class TicketController extends Controller
         title: 'Change ticket status',
         description: 'Changes ticket status and returns { data: TicketResource }. Only agents and admins can change status. Customer accounts receive 403.'
     )]
-    public function changeStatus(Request $request, Ticket $ticket)
+    public function changeStatus(ChangeTicketStatusRequest $request, Ticket $ticket)
     {
-        $this->authorize('changeStatus', $ticket);
-
-        $data = $request->validate([
-            /**
-             * New ticket status.
-             *
-             * @example in_progress
-             */
-            'status' => ['required', 'in:open,in_progress,closed'],
-        ]);
+        $data = $request->validated();
 
         $ticket->update([
             'status' => TicketStatus::from($data['status']),
