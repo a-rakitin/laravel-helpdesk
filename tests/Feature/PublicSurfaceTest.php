@@ -41,7 +41,10 @@ class PublicSurfaceTest extends TestCase
 
         $response->assertOk()
             ->assertHeader('content-type', 'text/html; charset=UTF-8')
-            ->assertSee('Laravel Helpdesk API Docs', false);
+            ->assertSee('<title>Helpdesk API Docs</title>', false)
+            ->assertSee('https://cdn.jsdelivr.net/npm/@scalar/api-reference', false)
+            ->assertSee("url: '/docs/api.json'", false)
+            ->assertSee('Scalar.createApiReference', false);
     }
 
     public function test_docs_api_json_keeps_openapi_document_route(): void
