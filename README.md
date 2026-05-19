@@ -1,5 +1,7 @@
 # Laravel Helpdesk API
 
+[English](README.md) | [Русский](README.ru.md)
+
 [![CI](https://github.com/a-rakitin/laravel-helpdesk/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/a-rakitin/laravel-helpdesk/actions/workflows/ci.yml)
 
 Helpdesk ticket workflow API built with Laravel 12. The project includes Sanctum token authentication, role-based access control, PostgreSQL, Redis, Docker, automated tests, CI, and OpenAPI documentation generated with Scramble.
@@ -9,6 +11,8 @@ Helpdesk ticket workflow API built with Laravel 12. The project includes Sanctum
 - Live API root: https://helpdesk.rakitin.tech
 - Live interactive docs: https://helpdesk.rakitin.tech/docs/api
 - Live OpenAPI JSON: https://helpdesk.rakitin.tech/docs/api.json
+- GitHub repository: https://github.com/a-rakitin/laravel-helpdesk
+- Postman assets: [`postman/`](postman/)
 - Local interactive docs: http://localhost/docs/api
 - Local OpenAPI JSON: http://localhost/docs/api.json
 
@@ -44,8 +48,8 @@ Run the project locally for the complete API flow. The included Postman collecti
 
 Postman assets:
 
-- `postman/helpdesk-api.local.collection.json`
-- `postman/helpdesk-api.local.environment.json`
+- [`postman/helpdesk-api.local.collection.json`](postman/helpdesk-api.local.collection.json)
+- [`postman/helpdesk-api.local.environment.json`](postman/helpdesk-api.local.environment.json)
 
 Local demo users created by seeders use password `password`:
 

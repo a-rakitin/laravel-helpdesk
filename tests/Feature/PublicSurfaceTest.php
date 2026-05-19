@@ -25,6 +25,9 @@ class PublicSurfaceTest extends TestCase
             ->assertSee('href="/docs/api.json"', false)
             ->assertSee('href="https://github.com/a-rakitin/laravel-helpdesk"', false)
             ->assertSee('href="https://github.com/a-rakitin/laravel-helpdesk#local-setup"', false)
+            ->assertSee('data-local-setup-link', false)
+            ->assertSee('data-local-setup-href-en="https://github.com/a-rakitin/laravel-helpdesk#local-setup"', false)
+            ->assertSee('data-local-setup-href-ru="https://github.com/a-rakitin/laravel-helpdesk/blob/main/README.ru.md#локальный-запуск"', false)
             ->assertSee('href="https://github.com/a-rakitin/laravel-helpdesk/tree/main/postman"', false)
             ->assertDontSee('/api-docs.html', false)
             ->assertDontSee('"status":"ok"', false);

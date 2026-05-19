@@ -431,7 +431,14 @@
                             <span data-lang-block="ru">Открыть</span>
                         </span>
                     </a>
-                    <a class="resource" href="https://github.com/a-rakitin/laravel-helpdesk#local-setup" rel="noopener noreferrer">
+                    <a
+                        class="resource"
+                        href="https://github.com/a-rakitin/laravel-helpdesk#local-setup"
+                        data-local-setup-link
+                        data-local-setup-href-en="https://github.com/a-rakitin/laravel-helpdesk#local-setup"
+                        data-local-setup-href-ru="https://github.com/a-rakitin/laravel-helpdesk/blob/main/README.ru.md#локальный-запуск"
+                        rel="noopener noreferrer"
+                    >
                         <span>
                             <strong data-lang-block="en">Local setup</strong>
                             <strong data-lang-block="ru">Локальный запуск</strong>
@@ -464,6 +471,7 @@
         (() => {
             const root = document.documentElement;
             const choices = Array.from(document.querySelectorAll('[data-lang-choice]'));
+            const localSetupLink = document.querySelector('[data-local-setup-link]');
             const saved = window.localStorage.getItem('landing-language');
             const browserLanguage = navigator.language && navigator.language.toLowerCase().startsWith('ru') ? 'ru' : 'en';
             const initialLanguage = saved || browserLanguage;
@@ -477,6 +485,12 @@
                 choices.forEach((choice) => {
                     choice.setAttribute('aria-pressed', String(choice.dataset.langChoice === nextLanguage));
                 });
+
+                if (localSetupLink) {
+                    localSetupLink.href = nextLanguage === 'ru'
+                        ? localSetupLink.dataset.localSetupHrefRu
+                        : localSetupLink.dataset.localSetupHrefEn;
+                }
             };
 
             choices.forEach((choice) => {
