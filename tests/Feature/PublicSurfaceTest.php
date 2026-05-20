@@ -29,7 +29,6 @@ class PublicSurfaceTest extends TestCase
             ->assertSee('data-local-setup-href-en="https://github.com/a-rakitin/laravel-helpdesk#local-setup"', false)
             ->assertSee('data-local-setup-href-ru="https://github.com/a-rakitin/laravel-helpdesk/blob/main/README.ru.md#локальный-запуск"', false)
             ->assertSee('href="https://github.com/a-rakitin/laravel-helpdesk/tree/main/postman"', false)
-            ->assertDontSee('/api-docs.html', false)
             ->assertDontSee('"status":"ok"', false);
 
         $content = $response->getContent();
@@ -60,12 +59,5 @@ class PublicSurfaceTest extends TestCase
                 'info' => ['title', 'version'],
                 'paths',
             ]);
-    }
-
-    public function test_legacy_api_docs_url_is_not_part_of_public_surface(): void
-    {
-        $response = $this->get('/api-docs.html');
-
-        $response->assertNotFound();
     }
 }
