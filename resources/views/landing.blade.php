@@ -157,6 +157,7 @@
         }
 
         .panel {
+            min-width: 0;
             border: 1px solid var(--line);
             border-radius: 8px;
             background: rgba(17, 27, 42, 0.72);
@@ -180,6 +181,7 @@
         }
 
         .capability {
+            min-width: 0;
             min-height: 130px;
             padding: 18px;
             border: 1px solid var(--line);
@@ -195,7 +197,8 @@
         .capability-pill {
             display: inline-flex;
             align-items: center;
-            width: max-content;
+            width: fit-content;
+            min-width: 0;
             max-width: 100%;
             padding: 4px 8px;
             border: 1px solid var(--line);
@@ -205,7 +208,8 @@
             font-size: 0.76rem;
             font-weight: 800;
             line-height: 1.35;
-            white-space: nowrap;
+            white-space: normal;
+            overflow-wrap: anywhere;
         }
 
         .resource-list {
@@ -219,12 +223,17 @@
             grid-template-columns: minmax(0, 1fr) 86px;
             gap: 16px;
             align-items: center;
+            min-width: 0;
             min-height: 76px;
             padding: 16px;
             border: 1px solid var(--line);
             border-radius: 8px;
             background: rgba(7, 11, 18, 0.42);
             text-decoration: none;
+        }
+
+        .resource > span {
+            min-width: 0;
         }
 
         .resource strong {
@@ -342,7 +351,19 @@
             }
 
             .button,
-            .resource-action {
+            .resource .resource-action {
+                width: 100%;
+                justify-self: stretch;
+            }
+
+            .button,
+            .capability-pill {
+                white-space: normal;
+                text-align: center;
+            }
+
+            .capability-pill {
+                justify-content: center;
                 width: 100%;
             }
         }
