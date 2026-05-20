@@ -14,6 +14,21 @@ class ListTicketsRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if (! $this->has('mine') || ! is_string($this->input('mine'))) {
+            return;
+        }
+
+        $this->merge([
+            'mine' => match (strtolower($this->input('mine'))) {
+                'true' => true,
+                'false' => false,
+                default => $this->input('mine'),
+            },
+        ]);
+    }
+
     public function rules(): array
     {
         return [

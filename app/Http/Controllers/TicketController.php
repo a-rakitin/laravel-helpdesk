@@ -57,10 +57,11 @@ class TicketController extends Controller
 
         if (isset($validated['search'])) {
             $search = $validated['search'];
+            $searchOperator = $query->getModel()->getConnection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
 
-            $query->where(function (Builder $q) use ($search) {
-                $q->where('title', 'ilike', "%{$search}%")
-                    ->orWhere('description', 'ilike', "%{$search}%");
+            $query->where(function (Builder $q) use ($search, $searchOperator) {
+                $q->where('title', $searchOperator, "%{$search}%")
+                    ->orWhere('description', $searchOperator, "%{$search}%");
             });
         }
 
