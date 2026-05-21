@@ -13,8 +13,8 @@ class PublicSurfaceTest extends TestCase
         $response->assertOk()
             ->assertHeader('content-type', 'text/html; charset=UTF-8')
             ->assertSee('<title>Helpdesk API</title>', false)
-            ->assertSee('rel="icon"', false)
-            ->assertSee('data:image/svg+xml', false)
+            ->assertSee('<link rel="icon" type="image/svg+xml" href="/favicon.svg">', false)
+            ->assertSee('<link rel="alternate icon" href="/favicon.ico">', false)
             ->assertSee('Helpdesk API', false)
             ->assertSee('Helpdesk ticket workflow API', false)
             ->assertSee('data-theme="dark"', false)
@@ -44,9 +44,25 @@ class PublicSurfaceTest extends TestCase
         $response->assertOk()
             ->assertHeader('content-type', 'text/html; charset=UTF-8')
             ->assertSee('<title>Helpdesk API Docs</title>', false)
+            ->assertSee('<link rel="icon" type="image/svg+xml" href="/favicon.svg">', false)
+            ->assertSee('<link rel="alternate icon" href="/favicon.ico">', false)
             ->assertSee('https://cdn.jsdelivr.net/npm/@scalar/api-reference', false)
             ->assertSee("url: '/docs/api.json'", false)
             ->assertSee('Scalar.createApiReference', false);
+    }
+
+    public function test_favicon_assets_exist_for_browser_tabs(): void
+    {
+        $svg = file_get_contents(public_path('favicon.svg'));
+        $ico = file_get_contents(public_path('favicon.ico'));
+
+        $this->assertIsString($svg);
+        $this->assertStringContainsString('<svg', $svg);
+        $this->assertStringContainsString('#2dd4bf', $svg);
+
+        $this->assertIsString($ico);
+        $this->assertGreaterThan(0, strlen($ico));
+        $this->assertSame("\x00\x00\x01\x00", substr($ico, 0, 4));
     }
 
     public function test_docs_api_json_keeps_openapi_document_route(): void
