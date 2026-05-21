@@ -89,9 +89,11 @@ cd laravel-helpdesk
 cp .env.example .env
 docker compose up -d --build
 
+docker exec -it helpdesk-app composer install --no-interaction
 docker exec -it helpdesk-app php artisan key:generate
 docker exec -it helpdesk-app php artisan migrate --seed
 docker exec -it helpdesk-app php artisan optimize:clear
+docker compose restart worker
 ```
 
 Для стабильных локальных API и Postman-проверок оставьте эти значения в `.env`:
