@@ -1244,16 +1244,14 @@
                   "});",
                   "",
                   "const json = pm.response.json();",
-                  "const data = json.data || [];",
-                  "",
-                  "if (data.length > 1) {",
-                  "  for (let i = 1; i < data.length; i += 1) {",
-                  "    pm.expect(data[i - 1].created_at <= data[i].created_at).to.eql(true);",
-                  "  }",
-                  "}",
+                  "const tickets = json.data || [];",
                   "",
                   "pm.test('Sorting request completed', function () {",
-                  "  pm.expect(true).to.eql(true);",
+                  "  if (tickets.length > 1) {",
+                  "    for (let i = 1; i < tickets.length; i += 1) {",
+                  "      pm.expect(tickets[i - 1].created_at <= tickets[i].created_at).to.eql(true);",
+                  "    }",
+                  "  }",
                   "});"
                 ]
               }

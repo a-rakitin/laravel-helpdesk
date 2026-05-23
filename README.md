@@ -62,6 +62,15 @@ The Postman environment uses:
 - `admin`: `qa-admin@example.com` / `password`
 - `agent`: `qa-agent@example.com` / `password`
 
+Automated local smoke check:
+
+```bash
+npm install
+npm run api:smoke:local
+```
+
+This runs the existing Postman collection with the local environment against `http://localhost`.
+
 ## Tech Stack
 
 - Laravel 12
@@ -145,7 +154,7 @@ Dependency audit:
 
 ```bash
 composer audit
-npm audit
+npm audit --omit=dev
 ```
 
 Docker Compose config:
@@ -164,6 +173,13 @@ Backend tests:
 
 ```bash
 docker exec -it helpdesk-app php artisan test
+```
+
+Local API smoke via the existing Postman collection:
+
+```bash
+npm install
+npm run api:smoke:local
 ```
 
 Frontend assets only need rebuilding when files under `resources/` or Vite configuration change:

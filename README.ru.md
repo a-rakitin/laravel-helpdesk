@@ -62,6 +62,15 @@ Helpdesk API для работы с тикетами, построенный н�
 - `admin`: `qa-admin@example.com` / `password`
 - `agent`: `qa-agent@example.com` / `password`
 
+Автоматическая локальная smoke-проверка:
+
+```bash
+npm install
+npm run api:smoke:local
+```
+
+Команда запускает существующую Postman-коллекцию с локальным окружением против `http://localhost`.
+
 ## Стек
 
 - Laravel 12
@@ -146,7 +155,7 @@ composer validate --strict
 
 ```bash
 composer audit
-npm audit
+npm audit --omit=dev
 ```
 
 Конфигурация Docker Compose:
@@ -165,6 +174,13 @@ Backend-тесты:
 
 ```bash
 docker exec -it helpdesk-app php artisan test
+```
+
+Локальная API smoke-проверка через существующую Postman-коллекцию:
+
+```bash
+npm install
+npm run api:smoke:local
 ```
 
 Frontend assets нужно пересобирать только при изменениях в `resources/` или конфигурации Vite:
