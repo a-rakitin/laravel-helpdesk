@@ -6,6 +6,7 @@ use App\Models\Ticket;
 use App\Models\TicketComment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class TicketCommentAddedNotification extends Notification implements ShouldQueue
@@ -19,7 +20,16 @@ class TicketCommentAddedNotification extends Notification implements ShouldQueue
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'mail'];
+    }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject("New comment on ticket #{$this->ticket->id}")
+            ->greeting("Hello {$notifiable->name},")
+            ->line("A new comment was added to \"{$this->ticket->title}\".")
+            ->line($this->comment->body);
     }
 
     public function toArray(object $notifiable): array

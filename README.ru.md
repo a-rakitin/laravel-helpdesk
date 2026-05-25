@@ -15,6 +15,7 @@ Helpdesk API для работы с тикетами, построенный н�
 - Файлы Postman: [`postman/`](postman/)
 - Локальная интерактивная документация: http://localhost/docs/api
 - Локальный OpenAPI JSON: http://localhost/docs/api.json
+- Локальный Mailpit inbox: http://localhost:8025
 
 ## Что показывает проект
 
@@ -111,6 +112,11 @@ docker compose restart worker
 APP_ENV=local
 QUEUE_CONNECTION=sync
 ```
+
+Локальный Docker Compose также поднимает Mailpit для перехвата email-уведомлений.
+Откройте http://localhost:8025, чтобы посмотреть локальные письма, которые
+генерирует приложение. Mailpit используется только локально и не входит в
+документированную production deploy-команду.
 
 Docker-сервис PostgreSQL читает `DB_DATABASE`, `DB_USERNAME` и `DB_PASSWORD`
 из `.env`. Пароль из примера подходит только для локальной разработки; для
