@@ -41,6 +41,8 @@ class ProtectedEndpointTest extends TestCase
         return [
             'auth me' => ['GET', '/api/auth/me'],
             'auth logout' => ['POST', '/api/auth/logout'],
+            'list users' => ['GET', '/api/users'],
+            'change user role' => ['PATCH', '/api/users/1/role', []],
             'list tickets' => ['GET', '/api/tickets'],
             'create ticket' => ['POST', '/api/tickets', []],
             'show ticket' => ['GET', '/api/tickets/1'],

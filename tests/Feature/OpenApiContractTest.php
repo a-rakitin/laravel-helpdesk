@@ -39,6 +39,8 @@ class OpenApiContractTest extends TestCase
             '/auth/login',
             '/auth/me',
             '/auth/logout',
+            '/users',
+            '/users/{user}/role',
             '/tickets',
             '/tickets/{ticket}',
             '/tickets/{ticket}/assign',
@@ -60,6 +62,9 @@ class OpenApiContractTest extends TestCase
         foreach ($this->protectedOperations() as [$path, $method]) {
             $this->assertProtectedOperationDoesNotDisableSecurity($paths, $path, $method);
         }
+
+        $this->assertOperationDocumentsResponses($paths, '/users', 'get', [200, 401, 403, 422]);
+        $this->assertOperationDocumentsResponses($paths, '/users/{user}/role', 'patch', [200, 401, 403, 404, 422]);
     }
 
     /**
@@ -88,6 +93,21 @@ class OpenApiContractTest extends TestCase
     }
 
     /**
+     * @param  array<string, mixed>  $paths
+     * @param  array<int, int>  $statuses
+     */
+    private function assertOperationDocumentsResponses(array $paths, string $path, string $method, array $statuses): void
+    {
+        $operation = $paths[$path][$method] ?? null;
+
+        $this->assertIsArray($operation, "{$method} {$path} must exist in the OpenAPI document.");
+
+        foreach ($statuses as $status) {
+            $this->assertArrayHasKey((string) $status, $operation['responses'] ?? [], "{$method} {$path} must document {$status}.");
+        }
+    }
+
+    /**
      * @return array<int, array{string, string}>
      */
     private function protectedOperations(): array
@@ -95,6 +115,8 @@ class OpenApiContractTest extends TestCase
         return [
             ['/auth/me', 'get'],
             ['/auth/logout', 'post'],
+            ['/users', 'get'],
+            ['/users/{user}/role', 'patch'],
             ['/tickets', 'get'],
             ['/tickets', 'post'],
             ['/tickets/{ticket}', 'get'],
