@@ -130,6 +130,14 @@
             white-space: nowrap;
         }
 
+        .button.social {
+            width: 132px;
+        }
+
+        html[data-lang="en"] .actions .button {
+            width: 132px;
+        }
+
         .button.primary {
             border: 1px solid var(--teal-strong);
             color: #05201d;
@@ -143,7 +151,14 @@
             background: rgba(17, 27, 42, 0.92);
         }
 
-        .github-icon {
+        .button.telegram {
+            border: 1px solid rgba(34, 158, 217, 0.72);
+            color: #ffffff;
+            background: #229ed9;
+        }
+
+        .github-icon,
+        .telegram-icon {
             width: 18px;
             height: 18px;
             fill: currentColor;
@@ -351,6 +366,8 @@
                 grid-template-columns: 1fr;
             }
 
+            html[data-lang="en"] .actions .button,
+            .button.social,
             .button,
             .resource .resource-action {
                 width: 100%;
@@ -389,15 +406,21 @@
             </div>
 
             <nav class="actions" aria-label="Primary links">
-                <a class="button primary" href="/docs/api">
+                <a class="button primary" href="/docs/api" target="_blank" rel="noopener noreferrer">
                     <span data-lang-block="en">Open docs</span>
-                    <span data-lang-block="ru">Открыть документацию</span>
+                    <span data-lang-block="ru">Документация</span>
                 </a>
-                <a class="button github" href="https://github.com/a-rakitin/laravel-helpdesk" rel="noopener noreferrer">
+                <a class="button social github" href="https://github.com/a-rakitin/laravel-helpdesk" target="_blank" rel="noopener noreferrer">
                     <svg class="github-icon" aria-hidden="true" viewBox="0 0 16 16">
                         <path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.63 2.29 6.7 5.47 7.78.4.08.55-.18.55-.39 0-.19-.01-.84-.01-1.53-2.01.38-2.53-.5-2.69-.96-.09-.23-.48-.96-.82-1.15-.28-.15-.68-.52-.01-.53.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.09-1.78-.21-3.64-.91-3.64-4.04 0-.89.31-1.62.82-2.19-.08-.21-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.39 7.39 0 0 1 8 4.02c.68 0 1.36.09 2 .27 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.95.08 2.16.51.57.82 1.3.82 2.19 0 3.14-1.87 3.83-3.65 4.04.29.26.54.75.54 1.52 0 1.1-.01 1.99-.01 2.26 0 .21.15.47.55.39A8.16 8.16 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z"/>
                     </svg>
                     <span>GitHub</span>
+                </a>
+                <a class="button social telegram" href="https://t.me/rakitin_dev" target="_blank" rel="noopener noreferrer" aria-label="Telegram @rakitin_dev">
+                    <svg class="telegram-icon" aria-hidden="true" viewBox="0 0 24 24">
+                        <path d="M21.94 4.07c-.26-.22-.64-.28-1.02-.14L2.8 10.93c-.5.19-.82.57-.8.97.02.39.37.74.89.89l4.52 1.33 1.73 5.39c.13.42.43.7.81.74h.1c.34 0 .65-.18.88-.51l2.48-3.49 4.66 3.43c.28.21.59.32.9.32.2 0 .4-.05.58-.14.45-.23.75-.68.84-1.27l2.59-13.55c.08-.41-.06-.76-.34-.97Zm-4.54 3.72-7.88 7.11-.3 2.76-1.06-3.3 9.24-6.57Z"/>
+                    </svg>
+                    <span>Telegram</span>
                 </a>
             </nav>
         </section>
@@ -418,8 +441,8 @@
                     <div class="capability">
                         <strong data-lang-block="en">Tickets</strong>
                         <strong data-lang-block="ru">Тикеты</strong>
-                        <code class="capability-pill" data-lang-block="en">Create / Assign / Comment</code>
-                        <code class="capability-pill" data-lang-block="ru">Создание / Назначение / Комментарии</code>
+                        <code class="capability-pill" data-lang-block="en">Create / Assign / Status / Comments</code>
+                        <code class="capability-pill" data-lang-block="ru">Создание / Назначение / Статус / Комментарии</code>
                     </div>
                     <div class="capability">
                         <strong data-lang-block="en">Roles</strong>
@@ -442,7 +465,7 @@
                     <span data-lang-block="ru">Ресурсы проекта</span>
                 </div>
                 <div class="resource-list">
-                    <a class="resource" href="/docs/api.json">
+                    <a class="resource" href="/docs/api.json" target="_blank" rel="noopener noreferrer">
                         <span>
                             <strong>OpenAPI JSON</strong>
                             <span data-lang-block="en">Machine-readable API contract.</span>
@@ -459,6 +482,7 @@
                         data-local-setup-link
                         data-local-setup-href-en="https://github.com/a-rakitin/laravel-helpdesk#local-setup"
                         data-local-setup-href-ru="https://github.com/a-rakitin/laravel-helpdesk/blob/main/README.ru.md#локальный-запуск"
+                        target="_blank"
                         rel="noopener noreferrer"
                     >
                         <span>
@@ -472,7 +496,7 @@
                             <span data-lang-block="ru">Открыть</span>
                         </span>
                     </a>
-                    <a class="resource" href="https://github.com/a-rakitin/laravel-helpdesk/tree/main/postman" rel="noopener noreferrer">
+                    <a class="resource" href="https://github.com/a-rakitin/laravel-helpdesk/tree/main/postman" target="_blank" rel="noopener noreferrer">
                         <span>
                             <strong data-lang-block="en">Postman assets</strong>
                             <strong data-lang-block="ru">Postman коллекция</strong>

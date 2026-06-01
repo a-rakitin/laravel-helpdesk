@@ -20,21 +20,26 @@ class PublicSurfaceTest extends TestCase
             ->assertSee('data-theme="dark"', false)
             ->assertSee('data-lang-toggle', false)
             ->assertSee('GitHub', false)
+            ->assertSee('Telegram', false)
             ->assertSee('Local setup', false)
-            ->assertSee('href="/docs/api"', false)
-            ->assertSee('href="/docs/api.json"', false)
-            ->assertSee('href="https://github.com/a-rakitin/laravel-helpdesk"', false)
+            ->assertSee('href="/docs/api" target="_blank" rel="noopener noreferrer"', false)
+            ->assertSee('href="/docs/api.json" target="_blank" rel="noopener noreferrer"', false)
+            ->assertSee('href="https://github.com/a-rakitin/laravel-helpdesk" target="_blank" rel="noopener noreferrer"', false)
+            ->assertSee('href="https://t.me/rakitin_dev" target="_blank" rel="noopener noreferrer"', false)
             ->assertSee('href="https://github.com/a-rakitin/laravel-helpdesk#local-setup"', false)
             ->assertSee('data-local-setup-link', false)
             ->assertSee('data-local-setup-href-en="https://github.com/a-rakitin/laravel-helpdesk#local-setup"', false)
             ->assertSee('data-local-setup-href-ru="https://github.com/a-rakitin/laravel-helpdesk/blob/main/README.ru.md#локальный-запуск"', false)
-            ->assertSee('href="https://github.com/a-rakitin/laravel-helpdesk/tree/main/postman"', false)
+            ->assertSee('href="https://github.com/a-rakitin/laravel-helpdesk/tree/main/postman" target="_blank" rel="noopener noreferrer"', false)
             ->assertDontSee('"status":"ok"', false);
 
         $content = $response->getContent();
 
         $this->assertSame(1, substr_count($content, 'href="/docs/api"'));
         $this->assertSame(1, substr_count($content, 'href="/docs/api.json"'));
+        $this->assertSame(1, substr_count($content, 'href="https://t.me/rakitin_dev"'));
+        $this->assertSame(6, substr_count($content, 'target="_blank"'));
+        $this->assertSame(6, substr_count($content, 'rel="noopener noreferrer"'));
     }
 
     public function test_docs_api_shows_interactive_documentation(): void
