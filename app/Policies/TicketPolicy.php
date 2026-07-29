@@ -27,7 +27,7 @@ class TicketPolicy
 
     public function viewAny(User $user): bool
     {
-        return in_array($user->role->value, ['admin', 'agent', 'customer'], true);
+        return $user->isAdmin() || $user->isAgent() || $user->isCustomer();
     }
 
     public function assign(User $user, Ticket $ticket): bool
