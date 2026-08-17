@@ -13,14 +13,13 @@ use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
 use App\Models\User;
 use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Builder;
 
 class TicketController extends Controller
 {
-    #[Endpoint(
-        title: 'List tickets',
-        description: 'Returns tickets available to the authenticated user as { data: TicketResource[], meta }. Customers only see tickets they created. Agents and admins can see all tickets and can filter, search, sort, and paginate the result set. For agents and admins, mine=true limits the result to tickets assigned to the current user.'
-    )]
+    #[Endpoint(title: 'List tickets', description: 'Returns a paginated list of tickets accessible to the authenticated user. Customers see only tickets they created; agents and admins see all tickets.')]
+    #[QueryParameter('page', description: 'Page number.', type: 'integer', default: 1, example: 1)]
     public function index(ListTicketsRequest $request)
     {
         $this->authorize('viewAny', Ticket::class);
@@ -79,10 +78,7 @@ class TicketController extends Controller
         return TicketCollection::make($paginator);
     }
 
-    #[Endpoint(
-        title: 'Create ticket',
-        description: 'Creates a ticket for the authenticated user and returns { data: TicketResource }. The ticket starts with status open, and priority defaults to medium when omitted.'
-    )]
+    #[Endpoint(title: 'Create ticket', description: 'Creates a ticket for the authenticated user. New tickets have open status and medium priority by default.')]
     public function store(StoreTicketRequest $request)
     {
         $data = $request->validated();
@@ -100,10 +96,7 @@ class TicketController extends Controller
             ->setStatusCode(201);
     }
 
-    #[Endpoint(
-        title: 'Show ticket',
-        description: 'Returns { data: TicketResource } when the ticket is visible to the authenticated user. Customers can view only their own tickets; agents and admins can view any ticket.'
-    )]
+    #[Endpoint(title: 'Show ticket', description: 'Returns a ticket accessible to the authenticated user. Customers can view only tickets they created; agents and admins can view any ticket.')]
     public function show(Ticket $ticket)
     {
         $this->authorize('view', $ticket);
@@ -111,10 +104,7 @@ class TicketController extends Controller
         return TicketResource::make($ticket);
     }
 
-    #[Endpoint(
-        title: 'Assign ticket',
-        description: 'Assigns a ticket to an agent and returns { data: TicketResource }. Only agents and admins can assign tickets. Customer accounts receive 403. The assignee ID must exist and must belong to an agent, otherwise the endpoint returns 422.'
-    )]
+    #[Endpoint(title: 'Assign ticket', description: 'Assigns a ticket to an agent. Only agents and admins can assign tickets.')]
     public function assign(AssignTicketRequest $request, Ticket $ticket)
     {
         $data = $request->validated();
@@ -134,10 +124,7 @@ class TicketController extends Controller
         return TicketResource::make($ticket->refresh());
     }
 
-    #[Endpoint(
-        title: 'Change ticket status',
-        description: 'Changes ticket status and returns { data: TicketResource }. Only agents and admins can change status. Customer accounts receive 403.'
-    )]
+    #[Endpoint(title: 'Change ticket status', description: 'Changes a ticket\'s status. Only agents and admins can change ticket status.')]
     public function changeStatus(ChangeTicketStatusRequest $request, Ticket $ticket)
     {
         $data = $request->validated();

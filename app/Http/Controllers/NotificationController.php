@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\NotificationResource;
 use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\PathParameter;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-    #[Endpoint(
-        title: 'List notifications',
-        description: 'Returns notifications for the authenticated user only as { data: NotificationResource[] }.'
-    )]
+    #[Endpoint(title: 'List notifications', description: 'Returns the authenticated user\'s notifications, ordered from newest to oldest.')]
     public function index(Request $request)
     {
         return NotificationResource::collection(
@@ -23,12 +22,10 @@ class NotificationController extends Controller
     }
 
     /**
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
-    #[Endpoint(
-        title: 'Mark notification as read',
-        description: 'Marks one notification as read when it belongs to the authenticated user. Unknown notification IDs and notifications owned by another user return 404.'
-    )]
+    #[Endpoint(title: 'Mark notification as read', description: 'Marks one of the authenticated user\'s notifications as read.')]
+    #[PathParameter('id', description: 'Notification UUID.', format: 'uuid')]
     public function markAsRead(Request $request, string $id)
     {
         $notification = $request->user()

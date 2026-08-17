@@ -18,6 +18,8 @@ class ListUsersRequest extends FormRequest
             /**
              * Number of users per page.
              *
+             * @default 15
+             *
              * @example 50
              */
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],

@@ -31,7 +31,9 @@ MARKDOWN,
         'web',
     ],
 
-    'extensions' => [],
+    'extensions' => [
+        App\OpenApi\RateLimitResponseExtension::class,
+    ],
 
     'ui' => [
         'title' => 'Laravel Helpdesk API Docs',

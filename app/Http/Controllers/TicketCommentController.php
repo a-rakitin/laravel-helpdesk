@@ -12,10 +12,7 @@ use Illuminate\Http\Request;
 
 class TicketCommentController extends Controller
 {
-    #[Endpoint(
-        title: 'List ticket comments',
-        description: 'Returns comments for a ticket visible to the authenticated user as { data: TicketCommentResource[] }. Customers can list comments only for their own tickets; agents and admins can list comments for any ticket.'
-    )]
+    #[Endpoint(title: 'List ticket comments', description: 'Returns comments for a ticket the authenticated user can access, ordered from newest to oldest.')]
     public function index(Request $request, Ticket $ticket)
     {
         $this->authorize('view', $ticket);
@@ -28,10 +25,7 @@ class TicketCommentController extends Controller
         return TicketCommentResource::collection($comments);
     }
 
-    #[Endpoint(
-        title: 'Create ticket comment',
-        description: 'Adds a comment to a visible ticket and returns { data: TicketCommentResource }. Customers can comment only on their own tickets; agents and admins can comment on any ticket. The ticket creator and assignee are notified except for the comment author.'
-    )]
+    #[Endpoint(title: 'Create ticket comment', description: 'Creates a comment on a ticket the authenticated user can access. The ticket creator and assignee are notified, except for the comment author.')]
     public function store(StoreTicketCommentRequest $request, Ticket $ticket)
     {
         $data = $request->validated();

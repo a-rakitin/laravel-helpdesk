@@ -35,16 +35,12 @@ class ListTicketsRequest extends FormRequest
             /**
              * Filter by ticket status.
              *
-             * Typical values: open, in_progress, closed.
-             *
              * @example open
              */
             'status' => ['nullable', Rule::enum(TicketStatus::class)],
 
             /**
              * Filter by ticket priority.
-             *
-             * Typical values: low, medium, high.
              *
              * @example high
              */
@@ -72,9 +68,9 @@ class ListTicketsRequest extends FormRequest
             'search' => ['nullable', 'string', 'max:255'],
 
             /**
-             * Sort field.
+             * Field to sort by.
              *
-             * Supported values in this endpoint: created_at, priority, status.
+             * @default created_at
              *
              * @example priority
              */
@@ -83,7 +79,7 @@ class ListTicketsRequest extends FormRequest
             /**
              * Sort direction.
              *
-             * Supported values in this endpoint: asc, desc.
+             * @default desc
              *
              * @example asc
              */
@@ -91,6 +87,8 @@ class ListTicketsRequest extends FormRequest
 
             /**
              * Number of tickets per page.
+             *
+             * @default 15
              *
              * @example 50
              */
