@@ -63,6 +63,10 @@ class OpenApiContractTest extends TestCase
             $this->assertProtectedOperationDoesNotDisableSecurity($paths, $path, $method);
         }
 
+        foreach ($this->rateLimitedOperations() as [$path, $method]) {
+            $this->assertOperationDocumentsRateLimitResponse($paths, $path, $method);
+        }
+
         $this->assertOperationDocumentsResponses($paths, '/users', 'get', [200, 401, 403, 422]);
         $this->assertOperationDocumentsResponses($paths, '/users/{user}/role', 'patch', [200, 401, 403, 404, 422]);
     }
@@ -108,6 +112,20 @@ class OpenApiContractTest extends TestCase
     }
 
     /**
+     * @param  array<string, mixed>  $paths
+     */
+    private function assertOperationDocumentsRateLimitResponse(array $paths, string $path, string $method): void
+    {
+        $response = $paths[$path][$method]['responses']['429'] ?? null;
+
+        $this->assertIsArray($response, "{$method} {$path} must document 429.");
+        $this->assertSame('Too many requests', $response['description'] ?? null);
+        $this->assertSame('object', $response['content']['application/json']['schema']['type'] ?? null);
+        $this->assertSame('string', $response['content']['application/json']['schema']['properties']['message']['type'] ?? null);
+        $this->assertContains('message', $response['content']['application/json']['schema']['required'] ?? []);
+    }
+
+    /**
      * @return array<int, array{string, string}>
      */
     private function protectedOperations(): array
@@ -126,6 +144,18 @@ class OpenApiContractTest extends TestCase
             ['/tickets/{ticket}/comments', 'post'],
             ['/notifications', 'get'],
             ['/notifications/{id}/read', 'post'],
+        ];
+    }
+
+    /**
+     * @return array<int, array{string, string}>
+     */
+    private function rateLimitedOperations(): array
+    {
+        return [
+            ['/auth/register', 'post'],
+            ['/auth/login', 'post'],
+            ...$this->protectedOperations(),
         ];
     }
 }

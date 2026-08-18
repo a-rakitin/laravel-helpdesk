@@ -21,9 +21,7 @@ class ChangeUserRoleRequest extends FormRequest
     {
         return [
             /**
-             * New role for the user.
-             *
-             * Supported values: admin, agent, customer.
+             * New user role.
              *
              * @example agent
              */

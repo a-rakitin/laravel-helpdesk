@@ -24,14 +24,16 @@ class StoreTicketRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
 
             /**
-             * Detailed problem description.
+             * Ticket description.
              *
              * @example Login fails after password reset.
              */
             'description' => ['required', 'string'],
 
             /**
-             * Ticket priority. Defaults to medium when omitted.
+             * Ticket priority.
+             *
+             * @default medium
              *
              * @example high
              */
