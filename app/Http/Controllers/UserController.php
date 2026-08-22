@@ -30,10 +30,7 @@ class UserController extends Controller
         return UserCollection::make($paginator);
     }
 
-    #[Endpoint(
-        title: 'Change user role',
-        description: 'Changes a user\'s role. Only admins can change user roles. At least one admin must remain.'
-    )]
+    #[Endpoint(title: 'Change user role', description: 'Changes a user\'s role. Only admins can change user roles. At least one admin must remain.')]
     #[PathParameter('user', description: 'User ID.', example: 3)]
     public function changeRole(ChangeUserRoleRequest $request, User $user): UserResource
     {

@@ -47,8 +47,8 @@ class AuthController extends Controller
      * @unauthenticated
      */
     #[Endpoint(title: 'Login', description: 'Authenticates a user, revokes all existing API tokens, and returns a new Sanctum bearer token.')]
-    #[BodyParameter('email', description: 'Registered user email address.', example: 'qa-agent@example.com')]
-    #[BodyParameter('password', description: 'User password.', format: 'password', example: 'password')]
+    #[BodyParameter('email', description: 'Registered user email address.', example: 'john@example.com')]
+    #[BodyParameter('password', description: 'User password.', format: 'password', example: 'password123')]
     public function login(Request $request)
     {
         $data = $request->validate([
