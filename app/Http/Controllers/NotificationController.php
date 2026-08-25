@@ -48,7 +48,7 @@ class NotificationController extends Controller
      * @throws ModelNotFoundException
      */
     #[Endpoint(title: 'Mark notification as read', description: 'Marks one of the authenticated user\'s notifications as read.')]
-    #[PathParameter('id', description: 'Notification UUID.', format: 'uuid')]
+    #[PathParameter('id', description: 'Notification UUID.', format: 'uuid', example: '018f2b2b-9b67-7d6d-a2e3-1d4b5c6d7e8f')]
     public function markAsRead(Request $request, string $id)
     {
         $notification = $request->user()
