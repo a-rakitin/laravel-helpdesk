@@ -138,6 +138,23 @@ class TicketController extends Controller
     }
 
     #[Endpoint(title: 'Show ticket', description: 'Returns a ticket accessible to the authenticated user. Customers can view only tickets they created; agents and admins can view any ticket.')]
+    #[Response(
+        status: 200,
+        description: 'The requested ticket.',
+        examples: [[
+            'data' => [
+                'id' => 42,
+                'title' => 'Cannot access account',
+                'description' => 'The user cannot sign in after resetting the password.',
+                'status' => 'open',
+                'priority' => 'high',
+                'created_by' => 1,
+                'assigned_to' => 3,
+                'created_at' => '2026-08-29T09:15:30.000000Z',
+                'updated_at' => '2026-08-29T09:15:30.000000Z',
+            ],
+        ]],
+    )]
     public function show(Ticket $ticket)
     {
         $this->authorize('view', $ticket);
