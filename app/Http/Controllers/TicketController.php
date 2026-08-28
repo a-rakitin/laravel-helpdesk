@@ -103,6 +103,23 @@ class TicketController extends Controller
     }
 
     #[Endpoint(title: 'Create ticket', description: 'Creates a ticket for the authenticated user. New tickets have open status and medium priority by default.')]
+    #[Response(
+        status: 201,
+        description: 'The created ticket.',
+        examples: [[
+            'data' => [
+                'id' => 42,
+                'title' => 'Cannot sign in',
+                'description' => 'Login fails after password reset.',
+                'status' => 'open',
+                'priority' => 'high',
+                'created_by' => 1,
+                'assigned_to' => null,
+                'created_at' => '2026-08-28T09:15:30.000000Z',
+                'updated_at' => '2026-08-28T09:15:30.000000Z',
+            ],
+        ]],
+    )]
     public function store(StoreTicketRequest $request)
     {
         $data = $request->validated();
