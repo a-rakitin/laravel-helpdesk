@@ -14,11 +14,35 @@ use App\Models\Ticket;
 use App\Models\User;
 use Dedoc\Scramble\Attributes\Endpoint;
 use Dedoc\Scramble\Attributes\QueryParameter;
+use Dedoc\Scramble\Attributes\Response;
 use Illuminate\Database\Eloquent\Builder;
 
 class TicketController extends Controller
 {
     #[Endpoint(title: 'List tickets', description: 'Returns a paginated list of tickets accessible to the authenticated user. Customers see only tickets they created; agents and admins see all tickets.')]
+    #[Response(
+        status: 200,
+        description: 'Paginated tickets accessible to the authenticated user.',
+        examples: [[
+            'data' => [[
+                'id' => 42,
+                'title' => 'Cannot access account',
+                'description' => 'The user cannot sign in after resetting the password.',
+                'status' => 'open',
+                'priority' => 'high',
+                'created_by' => 1,
+                'assigned_to' => 3,
+                'created_at' => '2026-08-27T09:15:30.000000Z',
+                'updated_at' => '2026-08-27T09:15:30.000000Z',
+            ]],
+            'meta' => [
+                'current_page' => 1,
+                'per_page' => 15,
+                'total' => 1,
+                'last_page' => 1,
+            ],
+        ]],
+    )]
     #[QueryParameter('page', description: 'Page number.', type: 'integer', default: 1, example: 1)]
     public function index(ListTicketsRequest $request)
     {
