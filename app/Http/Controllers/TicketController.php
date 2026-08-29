@@ -163,6 +163,23 @@ class TicketController extends Controller
     }
 
     #[Endpoint(title: 'Assign ticket', description: 'Assigns a ticket to an agent. Only agents and admins can assign tickets.')]
+    #[Response(
+        status: 200,
+        description: 'The ticket with its new assignee.',
+        examples: [[
+            'data' => [
+                'id' => 42,
+                'title' => 'Cannot access account',
+                'description' => 'The user cannot sign in after resetting the password.',
+                'status' => 'open',
+                'priority' => 'high',
+                'created_by' => 1,
+                'assigned_to' => 2,
+                'created_at' => '2026-08-28T09:15:30.000000Z',
+                'updated_at' => '2026-08-29T10:20:00.000000Z',
+            ],
+        ]],
+    )]
     public function assign(AssignTicketRequest $request, Ticket $ticket)
     {
         $data = $request->validated();
@@ -183,6 +200,23 @@ class TicketController extends Controller
     }
 
     #[Endpoint(title: 'Change ticket status', description: 'Changes a ticket\'s status. Only agents and admins can change ticket status.')]
+    #[Response(
+        status: 200,
+        description: 'The ticket with its updated status.',
+        examples: [[
+            'data' => [
+                'id' => 42,
+                'title' => 'Cannot access account',
+                'description' => 'The user cannot sign in after resetting the password.',
+                'status' => 'in_progress',
+                'priority' => 'high',
+                'created_by' => 1,
+                'assigned_to' => 2,
+                'created_at' => '2026-08-28T09:15:30.000000Z',
+                'updated_at' => '2026-08-29T10:30:00.000000Z',
+            ],
+        ]],
+    )]
     public function changeStatus(ChangeTicketStatusRequest $request, Ticket $ticket)
     {
         $data = $request->validated();
