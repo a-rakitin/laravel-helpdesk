@@ -7,6 +7,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Dedoc\Scramble\Attributes\BodyParameter;
 use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -17,6 +18,21 @@ class AuthController extends Controller
      * @unauthenticated
      */
     #[Endpoint(title: 'Register', description: 'Creates a customer account and returns a Sanctum bearer token.')]
+    #[Response(
+        status: 201,
+        description: 'The newly registered customer and access token.',
+        examples: [[
+            'user' => [
+                'id' => 1,
+                'name' => 'John Doe',
+                'email' => 'john@example.com',
+                'role' => 'customer',
+                'created_at' => '2026-08-30T11:00:00.000000Z',
+                'updated_at' => '2026-08-30T11:00:00.000000Z',
+            ],
+            'token' => '1|aB3dEfGhIjKlMnOpQrStUvWxYz0123456789AbCd',
+        ]],
+    )]
     #[BodyParameter('name', description: 'Customer display name.', example: 'John Doe')]
     #[BodyParameter('email', description: 'Unique customer email address.', example: 'john@example.com')]
     #[BodyParameter('password', description: 'User password.', format: 'password', example: 'password123')]
@@ -47,6 +63,21 @@ class AuthController extends Controller
      * @unauthenticated
      */
     #[Endpoint(title: 'Login', description: 'Authenticates a user, revokes all existing API tokens, and returns a new Sanctum bearer token.')]
+    #[Response(
+        status: 200,
+        description: 'The authenticated user and new access token.',
+        examples: [[
+            'user' => [
+                'id' => 1,
+                'name' => 'John Doe',
+                'email' => 'john@example.com',
+                'role' => 'customer',
+                'created_at' => '2026-08-30T11:00:00.000000Z',
+                'updated_at' => '2026-08-30T11:00:00.000000Z',
+            ],
+            'token' => '1|aB3dEfGhIjKlMnOpQrStUvWxYz0123456789AbCd',
+        ]],
+    )]
     #[BodyParameter('email', description: 'Registered user email address.', example: 'john@example.com')]
     #[BodyParameter('password', description: 'User password.', format: 'password', example: 'password123')]
     public function login(Request $request)
@@ -75,6 +106,20 @@ class AuthController extends Controller
     }
 
     #[Endpoint(title: 'Current user', description: 'Returns the authenticated user.')]
+    #[Response(
+        status: 200,
+        description: 'The authenticated user.',
+        examples: [[
+            'user' => [
+                'id' => 1,
+                'name' => 'John Doe',
+                'email' => 'john@example.com',
+                'role' => 'customer',
+                'created_at' => '2026-08-30T11:00:00.000000Z',
+                'updated_at' => '2026-08-30T11:00:00.000000Z',
+            ],
+        ]],
+    )]
     public function me(Request $request)
     {
         return response()->json([
