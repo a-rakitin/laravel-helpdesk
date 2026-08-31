@@ -8,20 +8,9 @@ return [
     'info' => [
         'version' => env('API_VERSION', '1.0.0'),
         'description' => <<<'MARKDOWN'
-# Laravel Helpdesk API
+API for managing support tickets, comments, notifications, and user roles.
 
-Portfolio project built with Laravel 12.
-
-This API includes:
-
-- authentication with Laravel Sanctum
-- ticket management
-- ticket comments
-- notifications
-- role-based access control
-- policy-based authorization
-
-Use the endpoints below to authenticate and work with the Helpdesk system.
+Use a Laravel Sanctum bearer token to access protected endpoints.
 MARKDOWN,
     ],
 
