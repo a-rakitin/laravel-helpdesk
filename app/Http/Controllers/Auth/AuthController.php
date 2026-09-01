@@ -128,6 +128,7 @@ class AuthController extends Controller
     }
 
     #[Endpoint(title: 'Logout', description: 'Logs out the authenticated user by revoking the current Sanctum access token.')]
+    #[Response(status: 200, description: 'Logged out.')]
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()?->delete();
