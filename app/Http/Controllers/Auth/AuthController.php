@@ -20,7 +20,7 @@ class AuthController extends Controller
     #[Endpoint(title: 'Register', description: 'Creates a customer account and returns a Sanctum bearer token.')]
     #[Response(
         status: 201,
-        description: 'The newly registered customer and access token.',
+        description: 'Registered customer and access token',
         examples: [[
             'user' => [
                 'id' => 1,
@@ -65,7 +65,7 @@ class AuthController extends Controller
     #[Endpoint(title: 'Login', description: 'Authenticates a user, revokes all existing API tokens, and returns a new Sanctum bearer token.')]
     #[Response(
         status: 200,
-        description: 'The authenticated user and new access token.',
+        description: 'Authenticated user and new access token',
         examples: [[
             'user' => [
                 'id' => 1,
@@ -108,7 +108,7 @@ class AuthController extends Controller
     #[Endpoint(title: 'Current user', description: 'Returns the authenticated user.')]
     #[Response(
         status: 200,
-        description: 'The authenticated user.',
+        description: 'Authenticated user',
         examples: [[
             'user' => [
                 'id' => 1,
@@ -128,7 +128,7 @@ class AuthController extends Controller
     }
 
     #[Endpoint(title: 'Logout', description: 'Logs out the authenticated user by revoking the current Sanctum access token.')]
-    #[Response(status: 200, description: 'Logged out.')]
+    #[Response(status: 200, description: 'Logged out')]
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()?->delete();

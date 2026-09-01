@@ -22,7 +22,7 @@ class TicketController extends Controller
     #[Endpoint(title: 'List tickets', description: 'Returns a paginated list of tickets accessible to the authenticated user. Customers see only tickets they created; agents and admins see all tickets.')]
     #[Response(
         status: 200,
-        description: 'Paginated tickets accessible to the authenticated user.',
+        description: 'Paginated tickets',
         examples: [[
             'data' => [[
                 'id' => 42,
@@ -105,7 +105,7 @@ class TicketController extends Controller
     #[Endpoint(title: 'Create ticket', description: 'Creates a ticket for the authenticated user. New tickets have open status and medium priority by default.')]
     #[Response(
         status: 201,
-        description: 'The created ticket.',
+        description: 'Created ticket',
         examples: [[
             'data' => [
                 'id' => 42,
@@ -140,7 +140,7 @@ class TicketController extends Controller
     #[Endpoint(title: 'Show ticket', description: 'Returns a ticket accessible to the authenticated user. Customers can view only tickets they created; agents and admins can view any ticket.')]
     #[Response(
         status: 200,
-        description: 'The requested ticket.',
+        description: 'Requested ticket',
         examples: [[
             'data' => [
                 'id' => 42,
@@ -165,7 +165,7 @@ class TicketController extends Controller
     #[Endpoint(title: 'Assign ticket', description: 'Assigns a ticket to an agent. Only agents and admins can assign tickets.')]
     #[Response(
         status: 200,
-        description: 'The ticket with its new assignee.',
+        description: 'Ticket with new assignee',
         examples: [[
             'data' => [
                 'id' => 42,
@@ -202,7 +202,7 @@ class TicketController extends Controller
     #[Endpoint(title: 'Change ticket status', description: 'Changes a ticket\'s status. Only agents and admins can change ticket status.')]
     #[Response(
         status: 200,
-        description: 'The ticket with its updated status.',
+        description: 'Ticket with updated status',
         examples: [[
             'data' => [
                 'id' => 42,

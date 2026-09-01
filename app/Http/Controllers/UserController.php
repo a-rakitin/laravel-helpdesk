@@ -20,7 +20,7 @@ class UserController extends Controller
     #[Endpoint(title: 'List users', description: 'Returns a paginated list of users ordered by ID. Only admins can list users.')]
     #[Response(
         status: 200,
-        description: 'Paginated users.',
+        description: 'Paginated users',
         examples: [[
             'data' => [[
                 'id' => 3,
@@ -54,7 +54,7 @@ class UserController extends Controller
     #[Endpoint(title: 'Change user role', description: 'Changes a user\'s role. Only admins can change user roles. At least one admin must remain.')]
     #[Response(
         status: 200,
-        description: 'The user after the role change.',
+        description: 'User with updated role',
         examples: [[
             'data' => [
                 'id' => 3,
