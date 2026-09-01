@@ -16,7 +16,7 @@ class TicketCommentController extends Controller
     #[Endpoint(title: 'List ticket comments', description: 'Returns comments for a ticket the authenticated user can access, ordered from newest to oldest.')]
     #[Response(
         status: 200,
-        description: 'Comments for the requested ticket.',
+        description: 'Ticket comments',
         examples: [[
             'data' => [[
                 'id' => 87,
@@ -51,7 +51,7 @@ class TicketCommentController extends Controller
     #[Endpoint(title: 'Create ticket comment', description: 'Creates a comment on a ticket the authenticated user can access. The ticket creator and assignee are notified, except for the comment author.')]
     #[Response(
         status: 201,
-        description: 'The created ticket comment.',
+        description: 'Created ticket comment',
         examples: [[
             'data' => [
                 'id' => 88,
