@@ -12,6 +12,7 @@ use App\Http\Resources\TicketCollection;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
 use App\Models\User;
+use App\OpenApi\Tickets\TicketResponseExamples;
 use Dedoc\Scramble\Attributes\Endpoint;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Dedoc\Scramble\Attributes\Response;
@@ -20,29 +21,7 @@ use Illuminate\Database\Eloquent\Builder;
 class TicketController extends Controller
 {
     #[Endpoint(title: 'List tickets', description: 'Returns a paginated list of tickets accessible to the authenticated user. Customers see only tickets they created; agents and admins see all tickets.')]
-    #[Response(
-        status: 200,
-        description: 'Paginated tickets',
-        examples: [[
-            'data' => [[
-                'id' => 42,
-                'title' => 'Cannot access account',
-                'description' => 'The user cannot sign in after resetting the password.',
-                'status' => 'open',
-                'priority' => 'high',
-                'created_by' => 1,
-                'assigned_to' => 3,
-                'created_at' => '2026-08-27T09:15:30.000000Z',
-                'updated_at' => '2026-08-27T09:15:30.000000Z',
-            ]],
-            'meta' => [
-                'current_page' => 1,
-                'per_page' => 15,
-                'total' => 1,
-                'last_page' => 1,
-            ],
-        ]],
-    )]
+    #[Response(status: 200, description: 'Paginated tickets', examples: [TicketResponseExamples::INDEX])]
     #[QueryParameter('page', description: 'Page number.', type: 'integer', default: 1, example: 1)]
     public function index(ListTicketsRequest $request)
     {
@@ -103,23 +82,7 @@ class TicketController extends Controller
     }
 
     #[Endpoint(title: 'Create ticket', description: 'Creates a ticket for the authenticated user. New tickets have open status and medium priority by default.')]
-    #[Response(
-        status: 201,
-        description: 'Created ticket',
-        examples: [[
-            'data' => [
-                'id' => 42,
-                'title' => 'Cannot sign in',
-                'description' => 'Login fails after password reset.',
-                'status' => 'open',
-                'priority' => 'high',
-                'created_by' => 1,
-                'assigned_to' => null,
-                'created_at' => '2026-08-28T09:15:30.000000Z',
-                'updated_at' => '2026-08-28T09:15:30.000000Z',
-            ],
-        ]],
-    )]
+    #[Response(status: 201, description: 'Created ticket', examples: [TicketResponseExamples::STORE])]
     public function store(StoreTicketRequest $request)
     {
         $data = $request->validated();
@@ -138,23 +101,7 @@ class TicketController extends Controller
     }
 
     #[Endpoint(title: 'Show ticket', description: 'Returns a ticket accessible to the authenticated user. Customers can view only tickets they created; agents and admins can view any ticket.')]
-    #[Response(
-        status: 200,
-        description: 'Requested ticket',
-        examples: [[
-            'data' => [
-                'id' => 42,
-                'title' => 'Cannot access account',
-                'description' => 'The user cannot sign in after resetting the password.',
-                'status' => 'open',
-                'priority' => 'high',
-                'created_by' => 1,
-                'assigned_to' => 3,
-                'created_at' => '2026-08-29T09:15:30.000000Z',
-                'updated_at' => '2026-08-29T09:15:30.000000Z',
-            ],
-        ]],
-    )]
+    #[Response(status: 200, description: 'Requested ticket', examples: [TicketResponseExamples::SHOW])]
     public function show(Ticket $ticket)
     {
         $this->authorize('view', $ticket);
@@ -163,23 +110,7 @@ class TicketController extends Controller
     }
 
     #[Endpoint(title: 'Assign ticket', description: 'Assigns a ticket to an agent. Only agents and admins can assign tickets.')]
-    #[Response(
-        status: 200,
-        description: 'Ticket with new assignee',
-        examples: [[
-            'data' => [
-                'id' => 42,
-                'title' => 'Cannot access account',
-                'description' => 'The user cannot sign in after resetting the password.',
-                'status' => 'open',
-                'priority' => 'high',
-                'created_by' => 1,
-                'assigned_to' => 2,
-                'created_at' => '2026-08-28T09:15:30.000000Z',
-                'updated_at' => '2026-08-29T10:20:00.000000Z',
-            ],
-        ]],
-    )]
+    #[Response(status: 200, description: 'Ticket with new assignee', examples: [TicketResponseExamples::ASSIGN])]
     public function assign(AssignTicketRequest $request, Ticket $ticket)
     {
         $data = $request->validated();
@@ -200,23 +131,7 @@ class TicketController extends Controller
     }
 
     #[Endpoint(title: 'Change ticket status', description: 'Changes a ticket\'s status. Only agents and admins can change ticket status.')]
-    #[Response(
-        status: 200,
-        description: 'Ticket with updated status',
-        examples: [[
-            'data' => [
-                'id' => 42,
-                'title' => 'Cannot access account',
-                'description' => 'The user cannot sign in after resetting the password.',
-                'status' => 'in_progress',
-                'priority' => 'high',
-                'created_by' => 1,
-                'assigned_to' => 2,
-                'created_at' => '2026-08-28T09:15:30.000000Z',
-                'updated_at' => '2026-08-29T10:30:00.000000Z',
-            ],
-        ]],
-    )]
+    #[Response(status: 200, description: 'Ticket with updated status', examples: [TicketResponseExamples::CHANGE_STATUS])]
     public function changeStatus(ChangeTicketStatusRequest $request, Ticket $ticket)
     {
         $data = $request->validated();
