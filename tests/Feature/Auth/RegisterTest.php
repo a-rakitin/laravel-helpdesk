@@ -52,4 +52,17 @@ class RegisterTest extends TestCase
 
         $this->assertTrue($user->isCustomer());
     }
+
+    public function test_register_reports_a_missing_password_confirmation_on_the_password_field(): void
+    {
+        $response = $this->postJson('/api/auth/register', [
+            'name' => 'Missing Confirmation',
+            'email' => 'missing-confirmation@example.com',
+            'password' => 'password123',
+        ]);
+
+        $response->assertUnprocessable()
+            ->assertJsonValidationErrors('password')
+            ->assertJsonMissingValidationErrors('password_confirmation');
+    }
 }
