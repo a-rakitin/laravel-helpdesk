@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Dedoc\Scramble\Attributes\BodyParameter;
+use App\OpenApi\Auth\AuthResponseExamples;
 use Dedoc\Scramble\Attributes\Endpoint;
 use Dedoc\Scramble\Attributes\Response;
 use Illuminate\Http\Request;
@@ -18,32 +20,10 @@ class AuthController extends Controller
      * @unauthenticated
      */
     #[Endpoint(title: 'Register', description: 'Creates a customer account and returns a Sanctum bearer token.')]
-    #[Response(
-        status: 201,
-        description: 'Registered customer and access token',
-        examples: [[
-            'user' => [
-                'id' => 1,
-                'name' => 'John Doe',
-                'email' => 'john@example.com',
-                'role' => 'customer',
-                'created_at' => '2026-08-30T11:00:00.000000Z',
-                'updated_at' => '2026-08-30T11:00:00.000000Z',
-            ],
-            'token' => '1|aB3dEfGhIjKlMnOpQrStUvWxYz0123456789AbCd',
-        ]],
-    )]
-    #[BodyParameter('name', description: 'Customer display name.', example: 'John Doe')]
-    #[BodyParameter('email', description: 'Unique customer email address.', example: 'john@example.com')]
-    #[BodyParameter('password', description: 'User password.', format: 'password', example: 'password123')]
-    #[BodyParameter('password_confirmation', description: 'Must match the password field.', format: 'password', example: 'password123')]
-    public function register(Request $request)
+    #[Response(status: 201, description: 'Registered customer and access token', examples: [AuthResponseExamples::AUTHENTICATED_USER])]
+    public function register(RegisterRequest $request)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        $data = $request->validated();
 
         $user = User::create([
             'name' => $data['name'],
@@ -63,29 +43,10 @@ class AuthController extends Controller
      * @unauthenticated
      */
     #[Endpoint(title: 'Login', description: 'Authenticates a user, revokes all existing API tokens, and returns a new Sanctum bearer token.')]
-    #[Response(
-        status: 200,
-        description: 'Authenticated user and new access token',
-        examples: [[
-            'user' => [
-                'id' => 1,
-                'name' => 'John Doe',
-                'email' => 'john@example.com',
-                'role' => 'customer',
-                'created_at' => '2026-08-30T11:00:00.000000Z',
-                'updated_at' => '2026-08-30T11:00:00.000000Z',
-            ],
-            'token' => '1|aB3dEfGhIjKlMnOpQrStUvWxYz0123456789AbCd',
-        ]],
-    )]
-    #[BodyParameter('email', description: 'Registered user email address.', example: 'john@example.com')]
-    #[BodyParameter('password', description: 'User password.', format: 'password', example: 'password123')]
-    public function login(Request $request)
+    #[Response(status: 200, description: 'Authenticated user and new access token', examples: [AuthResponseExamples::AUTHENTICATED_USER])]
+    public function login(LoginRequest $request)
     {
-        $data = $request->validate([
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-        ]);
+        $data = $request->validated();
 
         $user = User::where('email', $data['email'])->first();
 
@@ -106,20 +67,7 @@ class AuthController extends Controller
     }
 
     #[Endpoint(title: 'Current user', description: 'Returns the authenticated user.')]
-    #[Response(
-        status: 200,
-        description: 'Authenticated user',
-        examples: [[
-            'user' => [
-                'id' => 1,
-                'name' => 'John Doe',
-                'email' => 'john@example.com',
-                'role' => 'customer',
-                'created_at' => '2026-08-30T11:00:00.000000Z',
-                'updated_at' => '2026-08-30T11:00:00.000000Z',
-            ],
-        ]],
-    )]
+    #[Response(status: 200, description: 'Authenticated user', examples: [AuthResponseExamples::CURRENT_USER])]
     public function me(Request $request)
     {
         return response()->json([

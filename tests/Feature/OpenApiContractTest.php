@@ -6,6 +6,72 @@ use Tests\TestCase;
 
 class OpenApiContractTest extends TestCase
 {
+    public function test_auth_request_bodies_use_named_form_request_schemas(): void
+    {
+        $document = $this->getJson('/docs/api.json')->assertOk()->json();
+
+        $registerSchema = $document['paths']['/auth/register']['post']['requestBody']['content']['application/json']['schema'] ?? null;
+        $loginSchema = $document['paths']['/auth/login']['post']['requestBody']['content']['application/json']['schema'] ?? null;
+
+        $this->assertSame(['$ref' => '#/components/schemas/RegisterRequest'], $registerSchema);
+        $this->assertSame(['$ref' => '#/components/schemas/LoginRequest'], $loginSchema);
+
+        $this->assertSame(
+            'Customer display name.',
+            $document['components']['schemas']['RegisterRequest']['properties']['name']['description'] ?? null,
+        );
+        $this->assertSame(
+            'Must match the password field.',
+            $document['components']['schemas']['RegisterRequest']['properties']['password_confirmation']['description'] ?? null,
+        );
+        $this->assertSame(
+            'Registered user email address.',
+            $document['components']['schemas']['LoginRequest']['properties']['email']['description'] ?? null,
+        );
+    }
+
+    public function test_register_confirmation_schema_preserves_password_minimum_length(): void
+    {
+        $document = $this->getJson('/docs/api.json')->assertOk()->json();
+
+        $this->assertSame(
+            8,
+            $document['components']['schemas']['RegisterRequest']['properties']['password_confirmation']['minLength'] ?? null,
+        );
+    }
+
+    public function test_auth_response_examples_remain_consistent(): void
+    {
+        $document = $this->getJson('/docs/api.json')->assertOk()->json();
+
+        $user = [
+            'id' => 1,
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'role' => 'customer',
+            'created_at' => '2026-08-30T11:00:00.000000Z',
+            'updated_at' => '2026-08-30T11:00:00.000000Z',
+        ];
+
+        $authenticatedUser = [
+            'user' => $user,
+            'token' => '1|aB3dEfGhIjKlMnOpQrStUvWxYz0123456789AbCd',
+        ];
+
+        $this->assertSame(
+            [$authenticatedUser],
+            $document['paths']['/auth/register']['post']['responses']['201']['content']['application/json']['schema']['examples'] ?? null,
+        );
+        $this->assertSame(
+            [$authenticatedUser],
+            $document['paths']['/auth/login']['post']['responses']['200']['content']['application/json']['schema']['examples'] ?? null,
+        );
+        $this->assertSame(
+            [['user' => $user]],
+            $document['paths']['/auth/me']['get']['responses']['200']['content']['application/json']['schema']['examples'] ?? null,
+        );
+    }
+
     public function test_docs_api_json_exposes_stable_api_contract(): void
     {
         $response = $this->getJson('/docs/api.json');
