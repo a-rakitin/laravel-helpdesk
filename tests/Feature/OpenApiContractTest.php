@@ -72,6 +72,99 @@ class OpenApiContractTest extends TestCase
         );
     }
 
+    public function test_ticket_response_examples_remain_consistent(): void
+    {
+        $document = $this->getJson('/docs/api.json')->assertOk()->json();
+
+        $listedTicket = [
+            'id' => 42,
+            'title' => 'Cannot access account',
+            'description' => 'The user cannot sign in after resetting the password.',
+            'status' => 'open',
+            'priority' => 'high',
+            'created_by' => 1,
+            'assigned_to' => 3,
+            'created_at' => '2026-08-27T09:15:30.000000Z',
+            'updated_at' => '2026-08-27T09:15:30.000000Z',
+        ];
+
+        $createdTicket = [
+            'id' => 42,
+            'title' => 'Cannot sign in',
+            'description' => 'Login fails after password reset.',
+            'status' => 'open',
+            'priority' => 'high',
+            'created_by' => 1,
+            'assigned_to' => null,
+            'created_at' => '2026-08-28T09:15:30.000000Z',
+            'updated_at' => '2026-08-28T09:15:30.000000Z',
+        ];
+
+        $requestedTicket = [
+            'id' => 42,
+            'title' => 'Cannot access account',
+            'description' => 'The user cannot sign in after resetting the password.',
+            'status' => 'open',
+            'priority' => 'high',
+            'created_by' => 1,
+            'assigned_to' => 3,
+            'created_at' => '2026-08-29T09:15:30.000000Z',
+            'updated_at' => '2026-08-29T09:15:30.000000Z',
+        ];
+
+        $assignedTicket = [
+            'id' => 42,
+            'title' => 'Cannot access account',
+            'description' => 'The user cannot sign in after resetting the password.',
+            'status' => 'open',
+            'priority' => 'high',
+            'created_by' => 1,
+            'assigned_to' => 2,
+            'created_at' => '2026-08-28T09:15:30.000000Z',
+            'updated_at' => '2026-08-29T10:20:00.000000Z',
+        ];
+
+        $statusChangedTicket = [
+            'id' => 42,
+            'title' => 'Cannot access account',
+            'description' => 'The user cannot sign in after resetting the password.',
+            'status' => 'in_progress',
+            'priority' => 'high',
+            'created_by' => 1,
+            'assigned_to' => 2,
+            'created_at' => '2026-08-28T09:15:30.000000Z',
+            'updated_at' => '2026-08-29T10:30:00.000000Z',
+        ];
+
+        $pagination = [
+            'current_page' => 1,
+            'per_page' => 15,
+            'total' => 1,
+            'last_page' => 1,
+        ];
+
+        $this->assertSame(
+            [['data' => [$listedTicket], 'meta' => $pagination]],
+            $document['paths']['/tickets']['get']['responses']['200']['content']['application/json']['schema']['examples'] ?? null,
+        );
+        $this->assertSame(
+            [['data' => $createdTicket]],
+            $document['paths']['/tickets']['post']['responses']['201']['content']['application/json']['schema']['examples'] ?? null,
+        );
+        $this->assertSame(
+            [['data' => $requestedTicket]],
+            $document['paths']['/tickets/{ticket}']['get']['responses']['200']['content']['application/json']['schema']['examples'] ?? null,
+        );
+        $this->assertSame(
+            [['data' => $assignedTicket]],
+            $document['paths']['/tickets/{ticket}/assign']['patch']['responses']['200']['content']['application/json']['schema']['examples'] ?? null,
+        );
+        $this->assertSame(
+            [['data' => $statusChangedTicket]],
+            $document['paths']['/tickets/{ticket}/status']['patch']['responses']['200']['content']['application/json']['schema']['examples'] ?? null,
+        );
+    }
+
     public function test_docs_api_json_exposes_stable_api_contract(): void
     {
         $response = $this->getJson('/docs/api.json');
