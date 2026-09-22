@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\NotificationResource;
+use App\OpenApi\Notifications\NotificationResponseExamples;
 use Dedoc\Scramble\Attributes\Endpoint;
 use Dedoc\Scramble\Attributes\PathParameter;
 use Dedoc\Scramble\Attributes\Response;
@@ -15,25 +16,7 @@ class NotificationController extends Controller
         title: 'List notifications',
         description: 'Returns the authenticated user\'s notifications, ordered from newest to oldest.'
     )]
-    #[Response(
-        status: 200,
-        description: 'Authenticated user notifications',
-        examples: [[
-            'data' => [[
-                'id' => '018f2b2b-9b67-7d6d-a2e3-1d4b5c6d7e8f',
-                'type' => 'App\\Notifications\\TicketCommentAddedNotification',
-                'data' => [
-                    'ticket_id' => 42,
-                    'ticket_title' => 'Cannot access account',
-                    'comment_id' => 87,
-                    'comment_body' => 'We have reset your access. Please try again.',
-                    'comment_author_id' => 3,
-                ],
-                'read_at' => null,
-                'created_at' => '2026-08-24T10:15:30.000000Z',
-            ]],
-        ]],
-    )]
+    #[Response(status: 200, description: 'Authenticated user notifications', examples: [NotificationResponseExamples::INDEX])]
     public function index(Request $request)
     {
         return NotificationResource::collection(
