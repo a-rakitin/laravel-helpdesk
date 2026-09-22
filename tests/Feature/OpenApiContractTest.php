@@ -165,6 +165,30 @@ class OpenApiContractTest extends TestCase
         );
     }
 
+    public function test_notification_response_examples_remain_consistent(): void
+    {
+        $document = $this->getJson('/docs/api.json')->assertOk()->json();
+
+        $notification = [
+            'id' => '018f2b2b-9b67-7d6d-a2e3-1d4b5c6d7e8f',
+            'type' => 'App\\Notifications\\TicketCommentAddedNotification',
+            'data' => [
+                'ticket_id' => 42,
+                'ticket_title' => 'Cannot access account',
+                'comment_id' => 87,
+                'comment_body' => 'We have reset your access. Please try again.',
+                'comment_author_id' => 3,
+            ],
+            'read_at' => null,
+            'created_at' => '2026-08-24T10:15:30.000000Z',
+        ];
+
+        $this->assertSame(
+            [['data' => [$notification]]],
+            $document['paths']['/notifications']['get']['responses']['200']['content']['application/json']['schema']['examples'] ?? null,
+        );
+    }
+
     public function test_docs_api_json_exposes_stable_api_contract(): void
     {
         $response = $this->getJson('/docs/api.json');
