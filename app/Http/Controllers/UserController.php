@@ -8,6 +8,7 @@ use App\Http\Requests\ListUsersRequest;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\OpenApi\Users\UserResponseExamples;
 use Dedoc\Scramble\Attributes\Endpoint;
 use Dedoc\Scramble\Attributes\PathParameter;
 use Dedoc\Scramble\Attributes\QueryParameter;
@@ -18,26 +19,7 @@ use Illuminate\Validation\ValidationException;
 class UserController extends Controller
 {
     #[Endpoint(title: 'List users', description: 'Returns a paginated list of users ordered by ID. Only admins can list users.')]
-    #[Response(
-        status: 200,
-        description: 'Paginated users',
-        examples: [[
-            'data' => [[
-                'id' => 3,
-                'name' => 'Support Agent',
-                'email' => 'agent@example.com',
-                'role' => 'agent',
-                'created_at' => '2026-08-19T10:25:30.000000Z',
-                'updated_at' => '2026-08-29T10:20:00.000000Z',
-            ]],
-            'meta' => [
-                'current_page' => 1,
-                'per_page' => 15,
-                'total' => 1,
-                'last_page' => 1,
-            ],
-        ]],
-    )]
+    #[Response(status: 200, description: 'Paginated users', examples: [UserResponseExamples::INDEX])]
     #[QueryParameter('page', description: 'Page number.', type: 'integer', default: 1, example: 1)]
     public function index(ListUsersRequest $request): UserCollection
     {
@@ -52,20 +34,7 @@ class UserController extends Controller
     }
 
     #[Endpoint(title: 'Change user role', description: 'Changes a user\'s role. Only admins can change user roles. At least one admin must remain.')]
-    #[Response(
-        status: 200,
-        description: 'User with updated role',
-        examples: [[
-            'data' => [
-                'id' => 3,
-                'name' => 'Support Agent',
-                'email' => 'agent@example.com',
-                'role' => 'agent',
-                'created_at' => '2026-08-19T10:25:30.000000Z',
-                'updated_at' => '2026-08-30T10:30:00.000000Z',
-            ],
-        ]],
-    )]
+    #[Response(status: 200, description: 'User with updated role', examples: [UserResponseExamples::CHANGE_ROLE])]
     #[PathParameter('user', description: 'User ID.', example: 3)]
     public function changeRole(ChangeUserRoleRequest $request, User $user): UserResource
     {

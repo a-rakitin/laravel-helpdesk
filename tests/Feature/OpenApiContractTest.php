@@ -189,6 +189,45 @@ class OpenApiContractTest extends TestCase
         );
     }
 
+    public function test_user_response_examples_remain_consistent(): void
+    {
+        $document = $this->getJson('/docs/api.json')->assertOk()->json();
+
+        $listedUser = [
+            'id' => 3,
+            'name' => 'Support Agent',
+            'email' => 'agent@example.com',
+            'role' => 'agent',
+            'created_at' => '2026-08-19T10:25:30.000000Z',
+            'updated_at' => '2026-08-29T10:20:00.000000Z',
+        ];
+
+        $roleChangedUser = [
+            'id' => 3,
+            'name' => 'Support Agent',
+            'email' => 'agent@example.com',
+            'role' => 'agent',
+            'created_at' => '2026-08-19T10:25:30.000000Z',
+            'updated_at' => '2026-08-30T10:30:00.000000Z',
+        ];
+
+        $pagination = [
+            'current_page' => 1,
+            'per_page' => 15,
+            'total' => 1,
+            'last_page' => 1,
+        ];
+
+        $this->assertSame(
+            [['data' => [$listedUser], 'meta' => $pagination]],
+            $document['paths']['/users']['get']['responses']['200']['content']['application/json']['schema']['examples'] ?? null,
+        );
+        $this->assertSame(
+            [['data' => $roleChangedUser]],
+            $document['paths']['/users/{user}/role']['patch']['responses']['200']['content']['application/json']['schema']['examples'] ?? null,
+        );
+    }
+
     public function test_docs_api_json_exposes_stable_api_contract(): void
     {
         $response = $this->getJson('/docs/api.json');
