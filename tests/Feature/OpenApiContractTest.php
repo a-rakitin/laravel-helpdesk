@@ -228,6 +228,46 @@ class OpenApiContractTest extends TestCase
         );
     }
 
+    public function test_ticket_comment_response_examples_remain_consistent(): void
+    {
+        $document = $this->getJson('/docs/api.json')->assertOk()->json();
+
+        $listedComment = [
+            'id' => 87,
+            'ticket_id' => 42,
+            'user_id' => 3,
+            'body' => 'We have reset your access. Please try again.',
+            'created_at' => '2026-08-29T10:15:30.000000Z',
+            'updated_at' => '2026-08-29T10:15:30.000000Z',
+            'author' => [
+                'id' => 3,
+                'name' => 'Support Agent',
+                'email' => 'agent@example.com',
+                'role' => 'agent',
+                'created_at' => null,
+                'updated_at' => null,
+            ],
+        ];
+
+        $createdComment = [
+            'id' => 88,
+            'ticket_id' => 42,
+            'user_id' => 1,
+            'body' => 'I can reproduce this issue.',
+            'created_at' => '2026-08-29T11:00:00.000000Z',
+            'updated_at' => '2026-08-29T11:00:00.000000Z',
+        ];
+
+        $this->assertSame(
+            [['data' => [$listedComment]]],
+            $document['paths']['/tickets/{ticket}/comments']['get']['responses']['200']['content']['application/json']['schema']['examples'] ?? null,
+        );
+        $this->assertSame(
+            [['data' => $createdComment]],
+            $document['paths']['/tickets/{ticket}/comments']['post']['responses']['201']['content']['application/json']['schema']['examples'] ?? null,
+        );
+    }
+
     public function test_docs_api_json_exposes_stable_api_contract(): void
     {
         $response = $this->getJson('/docs/api.json');
