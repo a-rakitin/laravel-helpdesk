@@ -12,10 +12,7 @@ use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
-    #[Endpoint(
-        title: 'List notifications',
-        description: 'Returns the authenticated user\'s notifications, ordered from newest to oldest.'
-    )]
+    #[Endpoint(title: 'List notifications', description: 'Returns the authenticated user\'s notifications, ordered from newest to oldest.')]
     #[Response(status: 200, description: 'Authenticated user notifications', examples: [NotificationResponseExamples::INDEX])]
     public function index(Request $request)
     {
