@@ -1,6 +1,13 @@
 # Production Deploy
 
-This project is deployed manually on a VPS with Docker Compose.
+Server `.env`:
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://helpdesk.rakitin.tech
+QUEUE_CONNECTION=redis
+```
 
 ## Server path
 
@@ -25,115 +32,74 @@ A global symlink is also configured on the server, so the deploy can be started 
 hdp
 ```
 
-## What the script does
+## Deploy steps
 
-The script performs the following steps:
+The script runs these steps automatically. For a manual deployment, run the commands below.
 
-1. pulls the latest code from GitHub with `git pull --ff-only`
-2. rebuilds and starts containers with the production Compose files
-3. installs production Composer dependencies inside the app container
-4. runs database migrations
-5. clears old Laravel caches
-6. rebuilds config and route cache
-7. restarts queue workers
-8. recreates nginx to refresh the upstream connection
-9. runs health checks for the main site and documentation endpoints
+1. Pull the latest code.
 
-## Manual deploy fallback
+    ```bash
+    cd /var/www/laravel-helpdesk
+    git pull --ff-only
+    ```
 
-If needed, the same deploy can be executed manually:
+2. Build and start containers with the production Compose files.
 
-```bash
-cd /var/www/laravel-helpdesk
-git pull --ff-only
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-docker exec helpdesk-app composer install --no-dev --optimize-autoloader --no-interaction
-docker exec helpdesk-app php artisan migrate --force
-docker exec helpdesk-app php artisan optimize:clear
-docker exec helpdesk-app php artisan config:cache
-docker exec helpdesk-app php artisan route:cache
-docker exec helpdesk-app php artisan queue:restart
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --force-recreate nginx
-```
+    ```bash
+    docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+    ```
 
-## Health checks
+3. Install production PHP dependencies.
 
-After deploy, verify the main endpoints:
+    ```bash
+    docker exec helpdesk-app composer install --no-dev --optimize-autoloader --no-interaction
+    ```
 
-```bash
-APP_URL=https://your-domain.example
+4. Run database migrations.
 
-curl -I "$APP_URL"
-curl -I "$APP_URL/docs/api"
-curl -I "$APP_URL/docs/api.json"
-```
+    ```bash
+    docker exec helpdesk-app php artisan migrate --force
+    ```
 
-Expected result:
+5. Set ownership of Laravel's writable directories to `www-data`.
 
-- the main site responds successfully
-- the interactive documentation page responds successfully
-- OpenAPI JSON responds successfully
+    ```bash
+    docker exec helpdesk-app chown -R www-data:www-data storage bootstrap/cache
+    ```
 
-## Deploy smoke checklist
+6. Clear old Laravel caches.
 
-Set `APP_URL` to the deployed site. Use the first three checks for every deploy.
-Use either login or register to get a token, then verify at least one protected
-endpoint with that token.
+    ```bash
+    docker exec helpdesk-app php artisan optimize:clear
+    ```
 
-```bash
-APP_URL=https://your-domain.example
-```
+7. Rebuild the configuration and route caches.
 
-- Root endpoint:
+    ```bash
+    docker exec helpdesk-app php artisan config:cache
+    docker exec helpdesk-app php artisan route:cache
+    ```
 
-```bash
-curl -fsS "$APP_URL/"
-```
+8. Restart queue workers.
 
-- Docs JSON:
+    ```bash
+    docker exec helpdesk-app php artisan queue:restart
+    ```
 
-```bash
-curl -fsS "$APP_URL/docs/api.json"
-```
+9. Recreate Nginx to refresh its connection to the app.
 
-- Docs UI:
+    ```bash
+    docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --force-recreate nginx
+    ```
 
-```bash
-curl -fsS "$APP_URL/docs/api"
-```
+10. Check the application and API documentation.
 
-- Auth login with a known account:
+    ```bash
+    APP_URL=https://helpdesk.rakitin.tech
 
-```bash
-curl -fsS "$APP_URL/api/auth/login" \
-  -H 'Content-Type: application/json' \
-  -d '{"email":"qa-agent@example.com","password":"password"}'
-```
+    curl -fsS -o /dev/null "$APP_URL/"
+    curl -fsS -o /dev/null "$APP_URL/docs/api"
+    curl -fsS -o /dev/null "$APP_URL/docs/api.json"
+    ```
 
-- Or register a throwaway customer account:
-
-```bash
-curl -fsS "$APP_URL/api/auth/register" \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"Smoke Test","email":"smoke-CHANGE-ME@example.com","password":"password123","password_confirmation":"password123"}'
-```
-
-- Protected endpoint with the returned bearer token:
-
-```bash
-curl -fsS "$APP_URL/api/auth/me" \
-  -H 'Authorization: Bearer YOUR_TOKEN'
-```
-
-Production auth endpoints have a stricter rate limit than authenticated API
-endpoints, so avoid looping these smoke commands rapidly.
-
-## Notes
-
-- `git pull --ff-only` prevents accidental merge commits on the server
-- `composer install` is required on the server after pulling changes that modify `composer.json` or `composer.lock`
-- `queue:restart` is required so workers reload the new application code
-- `nginx` is recreated at the end because otherwise it may keep a stale upstream connection to the PHP container after app container recreation
-- the script includes automatic health-check retries
-- production database credentials should live in the server `.env`; the Compose
-  file only provides local development defaults
+    Successful requests produce no output; errors are printed.
