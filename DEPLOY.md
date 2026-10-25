@@ -43,11 +43,14 @@ The script runs these steps automatically. For a manual deployment, run the comm
     git pull --ff-only
     ```
 
-2. Build and start containers with the production Compose files.
+2. Build the PHP containers with fresh base images, then start containers with the production Compose files.
 
     ```bash
-    docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+    docker compose -f docker-compose.yml -f docker-compose.prod.yml build --pull app worker
+    docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
     ```
+
+    `--pull` refreshes the base images for both `app` and `worker`, including PHP patch releases within the 8.4 branch. If the build fails, stop here and resolve the error before starting containers.
 
 3. Install production PHP dependencies.
 
@@ -103,3 +106,14 @@ The script runs these steps automatically. For a manual deployment, run the comm
     ```
 
     Successful requests produce no output; errors are printed.
+
+## Verify the PHP version
+
+After deployment, manually check the PHP version in both containers:
+
+```bash
+docker exec helpdesk-app php -v
+docker exec helpdesk-worker php -v
+```
+
+The critical PHP security fixes released on 21 October 2026 require PHP 8.4.27 or later within the 8.4 branch. See the [official PHP security advisory](https://www.php.net/archive/2026.php#2026-10-21-5).

@@ -34,8 +34,11 @@ wait_for_url() {
 log "Pull latest changes"
 git pull --ff-only
 
-log "Build and start containers"
-docker compose "${COMPOSE_FILES[@]}" up -d --build
+log "Build PHP containers with fresh base images"
+docker compose "${COMPOSE_FILES[@]}" build --pull app worker
+
+log "Start containers"
+docker compose "${COMPOSE_FILES[@]}" up -d
 
 log "Install production PHP dependencies"
 docker compose "${COMPOSE_FILES[@]}" exec -T app composer install --no-dev --optimize-autoloader --no-interaction
